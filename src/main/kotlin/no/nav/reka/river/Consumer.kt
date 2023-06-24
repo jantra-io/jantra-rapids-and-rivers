@@ -9,7 +9,7 @@ import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 
-abstract class Løser(val rapidsConnection: RapidsConnection) : River.PacketListener {
+abstract class Consumer(val rapidsConnection: RapidsConnection) : River.PacketListener {
 
 
     init {

@@ -7,6 +7,8 @@ import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.inntektsmelding.integrasjonstest.filter.findMessage
+import no.nav.reka.river.examples.buildApp
+import no.nav.reka.river.model.Message
 import no.nav.reka.river.redis.RedisStore
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -47,6 +49,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
     @BeforeAll
     fun beforeAllEndToEnd() {
         redisStore = RedisStore(redisContainer.redisURI)
+        rapid.buildApp(redisStore)
 /*
         rapid.buildApp(
             redisStore,
@@ -86,7 +89,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
         meldinger.add(jacksonObjectMapper().readTree(message))
     }
 
-    fun filter(event: MessageType.Event, behovType: MessageType.Behov? = null, datafelt: MessageType.Data? = null): List<JsonNode> {
+    fun filter(event: MessageType.Event, behovType: MessageType.Behov? = null, datafelt: IDataFelt? = null): List<JsonNode> {
         return findMessage(meldinger, event, behovType, datafelt)
     }
 
@@ -102,6 +105,10 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
         val json = jacksonObjectMapper().writeValueAsString(value)
         println("Publiserer melding: $json")
         rapid.publish(json)
+    }
+
+    fun publish(value: Message) {
+        rapid.publish(value.toJsonMessage().toJson())
     }
 
     fun getMessages(t: (JsonNode) -> Boolean): List<JsonNode> {

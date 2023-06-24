@@ -1,7 +1,5 @@
 package no.nav.reka.river.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IKey

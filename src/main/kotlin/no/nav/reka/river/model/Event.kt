@@ -1,7 +1,6 @@
 package no.nav.reka.river.model
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataFelt

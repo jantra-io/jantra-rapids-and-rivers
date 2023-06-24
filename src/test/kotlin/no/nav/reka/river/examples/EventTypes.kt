@@ -1,16 +1,16 @@
-package no.nav.reka.river.examples.`2stepcomposite`
+package no.nav.reka.river.examples
 
 import no.nav.reka.river.IDataFelt
 import no.nav.reka.river.MessageType
 
-enum class Events(name: String)  : MessageType.Event{
+enum class EventName(name: String)  : MessageType.Event{
     APPLICATION_INITIATED("registration-started"),
     APPLICATION_RECIEVED("registration-accepted")
 
 }
 
 
-enum class Behov(name: String) :MessageType.Behov {
+enum class BehovName(name: String) :MessageType.Behov {
     FULL_NAME("full-name"),
     ADDRESS("address"),
     PERSIST_APPLICATION("persist-application")

@@ -16,7 +16,7 @@ enum class Key(override val str: String) : IKey{
     FAIL("fail");
 
     override fun toString(): String =
-        str
+            str
     fun str(): String = str
 
     companion object {
