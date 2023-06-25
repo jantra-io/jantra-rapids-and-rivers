@@ -1,13 +1,14 @@
-package no.nav.reka.river
+package no.nav.reka.river.composite
 
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.model.Data
+import no.nav.reka.river.MessageType
+import no.nav.reka.river.model.Fail
 
-abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketListener {
-    abstract val eventName: no.nav.reka.river.MessageType.Event
+abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketListener {
+    abstract val eventName: MessageType.Event
 
     init {
         configure(
@@ -17,17 +18,19 @@ abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketL
         ).register(this)
     }
 
-    abstract fun accept(): River.PacketValidation
+    protected fun accept(): River.PacketValidation {
+        return River.PacketValidation { }
+    }
 
     private fun configure(river: River): River {
         return river.validate {
-            Data.packetValidator.validate(it)
+            Fail.packetValidator.validate(it)
         }
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onData(packet)
+        onFail(packet)
     }
 
-    abstract fun onData(packet: JsonMessage)
+    abstract fun onFail(packet: JsonMessage)
 }

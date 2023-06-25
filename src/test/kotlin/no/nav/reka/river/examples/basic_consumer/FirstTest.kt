@@ -1,9 +1,10 @@
 package no.nav.reka.river.examples.basic_consumer
 
+import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.EndToEndTest
-import no.nav.reka.river.examples.BehovName
-import no.nav.reka.river.examples.EventName
+import no.nav.reka.river.examples.basic_listener.buildBaisListenerApp
 import no.nav.reka.river.model.Behov
+import no.nav.reka.river.redis.RedisStore
 import org.junit.Assert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
@@ -26,4 +27,7 @@ class FirstTest : EndToEndTest() {
         }
 
     }
+
+    override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
+        get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBasicConsumerApp(redisStore)}
 }

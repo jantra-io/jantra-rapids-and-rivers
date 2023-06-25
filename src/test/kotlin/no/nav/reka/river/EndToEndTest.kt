@@ -26,7 +26,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
 
     lateinit var redisStore: RedisStore
 
-    private val rapid by lazy {
+    val rapid by lazy {
         RapidApplication.create(
             mapOf(
                 "KAFKA_RAPID_TOPIC" to TOPIC,
@@ -37,6 +37,8 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
             )
         )
     }
+
+    abstract val appBuilder: (rapidConnection:RapidsConnection,redisStore: RedisStore) -> RapidsConnection
 
 
 
@@ -49,7 +51,8 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
     @BeforeAll
     fun beforeAllEndToEnd() {
         redisStore = RedisStore(redisContainer.redisURI)
-        rapid.buildApp(redisStore)
+       // rapid.buildApp(redisStore)
+        appBuilder.invoke(rapid,redisStore)
 /*
         rapid.buildApp(
             redisStore,

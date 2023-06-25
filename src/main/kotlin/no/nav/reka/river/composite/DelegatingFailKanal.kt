@@ -3,7 +3,6 @@ package no.nav.reka.river.composite
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.FailKanal
 
 class DelegatingFailKanal(
     override val eventName: no.nav.reka.river.MessageType.Event,

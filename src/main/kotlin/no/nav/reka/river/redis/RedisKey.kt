@@ -28,7 +28,7 @@ private data class DataKey(override val uuid: String, val datafelt: MessageType.
 
 private data class TransactionKey(override val uuid: String, val eventName: MessageType.Event) : RedisKey(uuid) {
     override fun toString(): String {
-        return uuid + eventName.name
+        return uuid + eventName.value
     }
 }
 

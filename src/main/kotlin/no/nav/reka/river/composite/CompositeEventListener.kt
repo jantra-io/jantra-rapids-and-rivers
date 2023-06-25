@@ -3,7 +3,6 @@ package no.nav.reka.river.composite
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.StatefullDataKanal
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
 import no.nav.reka.river.EventListener
-import no.nav.reka.river.FailKanal
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail

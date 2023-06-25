@@ -14,7 +14,7 @@ fun findMessage(
     datafelt: IDataFelt? = null
 ): List<JsonNode> {
     return meldinger
-        .filter { it.get(Key.EVENT_NAME.str).asText() == event.name }
-        .filter { behovType == null || it.getBehov().contains(behovType) }
+        .filter { it.get(Key.EVENT_NAME.str).asText() == event.value }
+        .filter { behovType == null || it.getBehov().find { it.value == behovType.value }!=null }
         .filter { datafelt == null || (it.contains(Key.DATA.str) && it.contains(datafelt.str)) }
 }

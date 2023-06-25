@@ -15,7 +15,7 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
 
     init {
         packetValidator.validate(jsonMessage)
-        jsonMessage.demandValue(Key.EVENT_NAME.str(),event.name)
+        jsonMessage.demandValue(Key.EVENT_NAME.str(),event.value)
     }
     companion object {
         val packetValidator = River.PacketValidation {
@@ -29,7 +29,7 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
         }
 
         fun create(event:MessageType.Event, map: Map<IKey, Any> = emptyMap() ) : Event {
-            return Event(event, JsonMessage.newMessage(event.name,map.mapKeys { it.key.str }))
+            return Event(event, JsonMessage.newMessage(event.value,map.mapKeys { it.key.str }))
         }
         fun create(jsonMessage: JsonMessage) : Event {
             val event = InternalEvent(jsonMessage[Key.EVENT_NAME.str()].asText())
@@ -38,12 +38,12 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
         }
     }
 
-    operator fun get(key: IKey): JsonNode =  jsonMessage[key.str]
+    override operator fun get(key: IKey): JsonNode =  jsonMessage[key.str]
 
-    operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
+    override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
-        return Behov(event, behov, JsonMessage.newMessage(event.name,mapOf(Key.BEHOV.str() to behov.name) + map.mapKeys { it.key.str }))
+        return Behov(event, behov, JsonMessage.newMessage(event.value,mapOf(Key.BEHOV.str() to behov.value) + map.mapKeys { it.key.str }))
     }
 
     override fun uuid() = this.uuid?:""

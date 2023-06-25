@@ -1,5 +1,6 @@
 package no.nav.reka.river.model
 
+import com.fasterxml.jackson.databind.JsonNode
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataFelt
@@ -15,8 +16,8 @@ class Behov(private val event: MessageType.Event,
 
     init {
         packetValidator.validate(jsonMessage)
-        jsonMessage.demandValue(Key.EVENT_NAME.str(),event.name)
-        jsonMessage.demandValue(Key.BEHOV.str(),behov.name)
+        jsonMessage.demandValue(Key.EVENT_NAME.str(),event.value)
+        jsonMessage.demandValue(Key.BEHOV.str(),behov.value)
     }
     companion object {
         val packetValidator = River.PacketValidation {
@@ -28,7 +29,7 @@ class Behov(private val event: MessageType.Event,
         }
 
         fun create(event: MessageType.Event, behov: MessageType.Behov ,map: Map<IKey, Any> = emptyMap() ) : Behov {
-            return Behov(event, behov ,JsonMessage.newMessage(event.name, mapOf(Key.BEHOV.str() to behov.name) + map.mapKeys { it.key.str }))
+            return Behov(event, behov ,JsonMessage.newMessage(event.value, mapOf(Key.BEHOV.str() to behov.value) + map.mapKeys { it.key.str }))
         }
 
         fun create(jsonMessage: JsonMessage) : Behov {
@@ -37,12 +38,20 @@ class Behov(private val event: MessageType.Event,
 
     }
 
+    override operator fun get(key: IKey): JsonNode =  jsonMessage[key.str]
+
+    override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
+
     fun createData(map: Map<IDataFelt, Any>): Data {
-        return Data(event, JsonMessage.newMessage(event.name, mapOf(Key.DATA.str() to "") + map.mapKeys { it.key.str }))
+        return Data(event, JsonMessage.newMessage(event.value, mapOf(Key.DATA.str() to "") + map.mapKeys { it.key.str }))
     }
 
     fun createFail(feilmelding:String, data: Map<IKey,Any>) : Fail {
         return Fail.create(event, behov,feilmelding ,data.mapKeys { it.key as IKey })
+    }
+
+    fun createBehov(behov: MessageType.Behov,data: Map<IKey, Any>) : Behov {
+        return Behov(this.event,behov, JsonMessage.newMessage(event.value, mapOf(Key.BEHOV.str() to behov.value) + data.mapKeys { it.key.str }))
     }
 
     override fun uuid() = jsonMessage[Key.UUID.str()].asText()

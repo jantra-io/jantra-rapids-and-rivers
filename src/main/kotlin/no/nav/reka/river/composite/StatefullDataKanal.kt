@@ -6,6 +6,7 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.InternalEvent
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.composite.DataKanal
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.redis.IRedisStore
 import no.nav.reka.river.redis.RedisKey
@@ -17,14 +18,14 @@ class StatefullDataKanal(
     private val mainListener: River.PacketListener,
     rapidsConnection: RapidsConnection,
     val redisStore: IRedisStore
-) : no.nav.reka.river.DataKanal(
+) : DataKanal(
     rapidsConnection
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun accept(): River.PacketValidation {
         return River.PacketValidation {
-            it.demandValue(Key.EVENT_NAME.str, eventName.name)
+            it.demandValue(Key.EVENT_NAME.str, eventName.value)
             it.demandKey(Key.DATA.str)
             dataFelter.forEach { datafelt ->
                 it.interestedIn(datafelt)
@@ -41,7 +42,7 @@ class StatefullDataKanal(
                     .toJsonMessage().toJson()
             )
         } else if (collectData(packet)) {
-            log.info("data collected for event ${eventName.name} med packet ${packet.toJson()}")
+            log.info("data collected for event ${eventName.value} med packet ${packet.toJson()}")
             mainListener.onPacket(packet, rapidsConnection)
         } else {
             log.warn("Mangler data for $packet")

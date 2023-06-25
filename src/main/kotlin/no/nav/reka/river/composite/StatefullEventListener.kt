@@ -41,7 +41,7 @@ class StatefullEventListener(
         }
     }
     override fun onEvent(packet: Event) {
-        log.info("Statefull event listener for event ${event.name}" + " med paket  ${packet.toString()}")
+        log.info("Statefull event listener for event ${event.value}" + " med paket  ${packet.toString()}")
         collectData(packet)
         mainListener.onMessage(packet)
     }

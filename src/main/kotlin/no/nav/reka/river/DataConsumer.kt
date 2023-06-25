@@ -9,14 +9,12 @@ import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 
-abstract class Consumer(val rapidsConnection: RapidsConnection) : River.PacketListener {
-
-
+abstract class DataConsumer(val rapidsConnection: RapidsConnection): River.PacketListener {
     init {
         configure(
-            River(rapidsConnection).apply {
-                validate(accept())
-            }
+                River(rapidsConnection).apply {
+                    validate(accept())
+                }
         ).register(this)
     }
 
@@ -24,7 +22,7 @@ abstract class Consumer(val rapidsConnection: RapidsConnection) : River.PacketLi
 
     private fun configure(river: River): River {
         return river.validate {
-            Behov.packetValidator.validate(it)
+            Data.packetValidator.validate(it)
         }
     }
 
@@ -45,8 +43,8 @@ abstract class Consumer(val rapidsConnection: RapidsConnection) : River.PacketLi
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onBehov(Behov.create(packet))
+        onData(Data.create(packet))
     }
 
-    abstract fun onBehov(packet: Behov)
+    abstract fun onData(packet: Data)
 }
