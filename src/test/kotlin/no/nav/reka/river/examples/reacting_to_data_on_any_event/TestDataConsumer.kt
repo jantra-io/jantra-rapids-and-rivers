@@ -2,9 +2,11 @@ package no.nav.reka.river.examples.reacting_to_data_on_any_event
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.EndToEndTest
+import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
 import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.model.Data
+import no.nav.reka.river.model.Event
 import no.nav.reka.river.redis.RedisStore
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
@@ -19,11 +21,30 @@ class TestDataConsumer : EndToEndTest() {
 
     @Test
     fun `Consumer reacting to data, agnostic of event and behov`() {
-        publish(Data.create(EventName.DOCUMENT_RECIEVED, map = mapOf(DataFelt.FORMATED_DOCUMENT to "formated document")))
+        publish(Event.create(EventName.DOCUMENT_RECIEVED, map = mapOf(DataFelt.RAW_DOCUMENT to "raw document")))
         Thread.sleep(50000)
+        with(filter(EventName.DOCUMENT_RECIEVED).first()) {
+            Assertions.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(),"raw document")
+        }
+        with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_JSON).first()) {
+            Assertions.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(),"raw document")
+        }
+        with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_XML).first()) {
+            Assertions.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(),"raw document")
+        }
+        with(filter(EventName.DOCUMENT_RECIEVED, datafelt = DataFelt.FORMATED_DOCUMENT)) {
+            Assertions.assertTrue( this.filter{
+                it[DataFelt.FORMATED_DOCUMENT.str].asText() == "My XML formatted document"
+            }.isNotEmpty())
+            Assertions.assertTrue( this.filter{
+                it[DataFelt.FORMATED_DOCUMENT.str].asText() == "My json formatted document"
+            }.isNotEmpty())
+        }
+
         with(filter(EventName.DOCUMENT_PERSISTED).first()) {
             Assertions.assertEquals(this[DataFelt.DOCUMENT_REFERECE.str].asText(),"AB123")
         }
+
     }
 
 }

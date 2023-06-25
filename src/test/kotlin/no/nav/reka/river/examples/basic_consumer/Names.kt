@@ -17,6 +17,8 @@ enum class EventName(override val value: String)  : MessageType.Event{
 enum class BehovName(override val value: String) : MessageType.Behov {
     FULL_NAME("full-name"),
     FORMAT_DOCUMENT("format-document"),
+    FORMAT_XML("format-xml"),
+    FORMAT_JSON("format-json"),
     PERSIST_DOCUMENT("persist-document");
     override fun toString() : String {
         return value
