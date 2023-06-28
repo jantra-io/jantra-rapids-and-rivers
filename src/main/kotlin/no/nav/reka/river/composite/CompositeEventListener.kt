@@ -29,7 +29,12 @@ abstract class CompositeEventListener(open val redisStore: IRedisStore) : Messag
             Transaction.IN_PROGRESS -> dispatchBehov(txMessage, transaction)
             Transaction.FINALIZE -> finalize(txMessage)
             Transaction.TERMINATE -> terminate(txMessage)
+            Transaction.NOT_ACTIVE -> notActive(txMessage)
         }
+    }
+
+    private fun notActive(message: TxMessage) {
+        log.error("Transaction is not active for message $message")
     }
 
     fun determineTransactionState(message: TxMessage): Transaction {
@@ -46,7 +51,7 @@ abstract class CompositeEventListener(open val redisStore: IRedisStore) : Messag
         if (value.isNullOrEmpty()) {
             if (!(message is Event)) {
                 log.error("TransactionID can be undefined only if the incoming message is Event.")
-                return Transaction.TERMINATE
+                return Transaction.NOT_ACTIVE
             }
 
             redisStore.set(eventKey, message.clientId?:transactionId)
