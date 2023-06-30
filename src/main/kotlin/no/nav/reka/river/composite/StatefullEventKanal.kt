@@ -10,7 +10,7 @@ import no.nav.reka.river.redis.IRedisStore
 import org.slf4j.LoggerFactory
 import java.util.UUID
 
-class StatefullEventListener(
+class StatefullEventKanal(
     val redisStore: IRedisStore,
     override val event: MessageType.Event,
     private val dataFelter: Array<IDataFelt>,

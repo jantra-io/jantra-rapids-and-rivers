@@ -12,7 +12,7 @@ import no.nav.reka.river.redis.IRedisStore
 import no.nav.reka.river.redis.RedisKey
 import org.slf4j.LoggerFactory
 
-abstract class CompositeEventListener(open val redisStore: IRedisStore) : MessageListener {
+abstract class TxListener(open val redisStore: IRedisStore) : MessageListener {
     private val log = LoggerFactory.getLogger(this::class.java)
     abstract val event: MessageType.Event
     private lateinit var dataKanal: StatefullDataKanal
@@ -72,17 +72,17 @@ abstract class CompositeEventListener(open val redisStore: IRedisStore) : Messag
         return Transaction.TERMINATE
     }
 
-    fun withFailKanal(failKanalSupplier: (t: CompositeEventListener) -> FailKanal): CompositeEventListener {
+    fun withFailKanal(failKanalSupplier: (t: TxListener) -> FailKanal): TxListener {
         failKanalSupplier.invoke(this)
         return this
     }
 
-    fun withEventListener(eventListenerSupplier: (t: CompositeEventListener) -> EventListener): CompositeEventListener {
+    fun withEventListener(eventListenerSupplier: (t: TxListener) -> EventListener): TxListener {
         eventListenerSupplier.invoke(this)
         return this
     }
 
-    fun withDataKanal(dataKanalSupplier: (t: CompositeEventListener) -> StatefullDataKanal): CompositeEventListener {
+    fun withDataKanal(dataKanalSupplier: (t: TxListener) -> StatefullDataKanal): TxListener {
         dataKanal = dataKanalSupplier.invoke(this)
         return this
     }

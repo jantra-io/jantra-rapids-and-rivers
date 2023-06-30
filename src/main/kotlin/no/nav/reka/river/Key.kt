@@ -8,6 +8,7 @@ enum class Key(override val str: String) : IKey{
     // Predefinerte fra rapids-and-rivers-biblioteket
     EVENT_NAME("@event_name"),
     BEHOV("@behov"),
+    FAILED_BEHOV("failed-behov"),
     OPPRETTET("@opprettet"),
     UUID("uuid"),
     CLIENT_ID("client_id"),

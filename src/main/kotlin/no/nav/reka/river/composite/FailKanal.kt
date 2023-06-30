@@ -29,8 +29,8 @@ abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketL
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onFail(packet)
+        onFail(Fail.create(packet))
     }
 
-    abstract fun onFail(packet: JsonMessage)
+    abstract fun onFail(packet: Fail)
 }
