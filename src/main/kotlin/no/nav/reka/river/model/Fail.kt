@@ -25,6 +25,7 @@ class Fail(val event: MessageType.Event,
             it.rejectKey(Key.DATA.str())
             it.demandKey(Key.FAIL.str())
             it.interestedIn(Key.UUID.str())
+            it.interestedIn(Key.FAILED_BEHOV)
         }
 
         fun create(event:MessageType.Event, behov: MessageType.Behov? = null,feilmelding:String, data: Map<IKey, Any> = emptyMap() ) : Fail {
@@ -36,19 +37,17 @@ class Fail(val event: MessageType.Event,
         }
 
         fun create(jsonMessage: JsonMessage) : Fail {
-            val behovText = jsonMessage[Key.FAILED_BEHOV.str]?.asText()
             val behov = jsonMessage[Key.FAILED_BEHOV.str]
-                        .takeUnless { it.isMissingOrNull() }
-                        ?.mapNotNull {
+                        .takeUnless { it.isMissingOrNull()}
+                        ?.let {
                             InternalBehov(it.asText())
                         }
-                        ?.first()
+
             val uuid  = jsonMessage[Key.UUID.str()]
-                        .takeUnless { it[Key.UUID.str].isMissingOrNull() }
-                        ?.mapNotNull {
+                        .takeUnless { it.isMissingOrNull() }
+                        ?.let {
                             it.asText()
                         }
-                        ?.first()
 
 
             return Fail(InternalEvent(jsonMessage[Key.EVENT_NAME.str()].asText()), behov, jsonMessage[Key.FAIL.str].asText(), jsonMessage[Key.UUID.str].asText(), jsonMessage)

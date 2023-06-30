@@ -12,7 +12,7 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : River.Pac
 
     abstract val event: MessageType.Event
 
-    init {
+    fun start() {
         configureAsListener(
             River(rapidsConnection).apply {
                 validate(accept())

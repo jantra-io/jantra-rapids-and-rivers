@@ -3,9 +3,11 @@ package no.nav.reka.river.test
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.composite.DelegatingFailKanal
 import no.nav.reka.river.composite.MessageListener
+import no.nav.reka.river.demandValue
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
@@ -17,10 +19,10 @@ abstract class EventListenerWithFail(val rapidsConnection: RapidsConnection) : M
 
     init {
         val validation: River.PacketValidation = River.PacketValidation {
-            accept()
+            this@EventListenerWithFail.accept().validate(it)
         }
 
-       DelegatingEventListener(this,rapidsConnection,event, validation)
+       DelegatingEventListener(this,rapidsConnection,event, validation).start()
 
     }
 
@@ -38,7 +40,14 @@ abstract class EventListenerWithFail(val rapidsConnection: RapidsConnection) : M
         }
     }
    fun withFailhandling() : MessageListener {
-        DelegatingFailKanal(event,this, rapidsConnection)
+        object:DelegatingFailKanal(event,this, rapidsConnection) {
+            override fun accept(): River.PacketValidation {
+                return River.PacketValidation {
+                    it.demandValue(Key.EVENT_NAME, eventName)
+                    this@EventListenerWithFail.accept().validate(it)
+                }
+            }
+        }
         return this
     }
 

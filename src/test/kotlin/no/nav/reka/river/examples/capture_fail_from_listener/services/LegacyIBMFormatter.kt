@@ -14,7 +14,7 @@ import no.nav.reka.river.model.Behov
 class LegacyIBMFormatter(rapidsConnection: RapidsConnection): Consumer(rapidsConnection) {
     override fun accept(): River.PacketValidation = River.PacketValidation {
         it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
-        it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT)
+        it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT_IBM)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
     }

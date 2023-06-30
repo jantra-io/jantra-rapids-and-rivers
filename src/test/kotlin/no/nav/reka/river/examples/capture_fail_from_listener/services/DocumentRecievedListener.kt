@@ -13,16 +13,20 @@ import no.nav.reka.river.test.EventListenerWithFail
 
 class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : EventListenerWithFail(rapidsConnection) {
     override val event: MessageType.Event  get() = EventName.DOCUMENT_RECIEVED
-    override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME,event)
-        it.interestedIn(DataFelt.RAW_DOCUMENT)
+    override fun accept(): River.PacketValidation  {
+        return River.PacketValidation {
+            it.demandValue(Key.EVENT_NAME,event)
+            it.interestedIn(DataFelt.RAW_DOCUMENT)
+        }
     }
 
     override fun onEvent(packet: Event) {
-        publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT])))
+        publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT],
+                                                                         DataFelt.RAW_DOCUMENT_FORMAT to "ebcdic")))
     }
 
     override fun onFail(fail: Fail) {
+
         publishBehov(Behov.create(event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
     }
 

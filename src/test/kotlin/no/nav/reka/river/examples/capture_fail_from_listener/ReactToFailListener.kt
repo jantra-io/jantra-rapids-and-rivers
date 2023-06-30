@@ -28,7 +28,7 @@ class ReactToFailListener : EndToEndTest() {
             org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
         }
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.PERSIST_DOCUMENT).first()) {
-            org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.FORMATED_DOCUMENT.str].asText(), "This is my formated document")
+            org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.FORMATED_DOCUMENT.str].asText(), "This is my IBM formated document")
         }
         with(filter(EventName.DOCUMENT_PERSISTED).first()) {
             org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.DOCUMENT_REFERECE.str].asText(), "AB123")
