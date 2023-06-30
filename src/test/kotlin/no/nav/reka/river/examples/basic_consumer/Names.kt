@@ -17,6 +17,7 @@ enum class EventName(override val value: String)  : MessageType.Event{
 enum class BehovName(override val value: String) : MessageType.Behov {
     FULL_NAME("full-name"),
     FORMAT_DOCUMENT("format-document"),
+    FORMAT_DOCUMENT_IBM("format-document-ibm"),
     FORMAT_XML("format-xml"),
     FORMAT_JSON("format-json"),
     PERSIST_DOCUMENT("persist-document");
@@ -28,6 +29,7 @@ enum class DataFelt(override val str: String) : IDataFelt {
     APPLICATION_ID("123"),
     FORMATED_DOCUMENT("formated-document"),
     RAW_DOCUMENT("raw-document"),
+    RAW_DOCUMENT_FORMAT("raw-document-format"),
     DOCUMENT_REFERECE("document-reference"),
     NAME("name");
     override fun toString() : String {

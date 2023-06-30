@@ -1,21 +1,19 @@
-package no.nav.helsearbeidsgiver.felles.rapidsrivers
+package no.nav.reka.river.composite
 
-import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.*
 import no.nav.reka.river.InternalEvent
-import no.nav.reka.river.Key
-import no.nav.reka.river.MessageType
-import no.nav.reka.river.composite.DataKanal
+import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.redis.IRedisStore
 import no.nav.reka.river.redis.RedisKey
 import org.slf4j.LoggerFactory
 
 class StatefullDataKanal(
-    private val dataFelter: Array<String>,
+    private val dataFelter: Array<IKey>,
     override val eventName: MessageType.Event,
-    private val mainListener: River.PacketListener,
+    private val mainListener: MessageListener,
     rapidsConnection: RapidsConnection,
     val redisStore: IRedisStore
 ) : DataKanal(
@@ -33,24 +31,24 @@ class StatefullDataKanal(
         }
     }
 
-    override fun onData(packet: JsonMessage) {
-        if (packet[Key.UUID.str].asText().isNullOrEmpty()) {
-            log.error("TransaksjonsID er ikke initialisert for ${packet.toJson()}")
+    override fun onData(data: Data) {
+        if (data.uuid().isNullOrEmpty()) {
+            log.error("TransaksjonsID er ikke initialisert for ${data.toJsonMessage().toJson()}")
             rapidsConnection.publish(
-                Fail.create(InternalEvent(packet[Key.EVENT_NAME.str()].asText()),
+                Fail.create(InternalEvent(data.event.value),
                     feilmelding = "TransaksjonsID / UUID kan ikke vare tom da man bruker Composite Service" )
                     .toJsonMessage().toJson()
             )
-        } else if (collectData(packet)) {
-            log.info("data collected for event ${eventName.value} med packet ${packet.toJson()}")
-            mainListener.onPacket(packet, rapidsConnection)
+        } else if (collectData(data)) {
+            log.info("data collected for event ${eventName.value} med packet ${data.toJsonMessage().toJson()}")
+            mainListener.onMessage(data)
         } else {
-            log.warn("Mangler data for $packet")
+            log.warn("Mangler data for $data")
             // @TODO fiks logging logger.warn("Unrecognized package with uuid:" + packet[Key.UUID.str])
         }
     }
 
-    private fun collectData(message: JsonMessage): Boolean {
+    private fun collectData(message: Data): Boolean {
         // Akkuratt nå bare svarer med 1 data element men kan svare med mange
         val data = dataFelter.filter { dataFelt ->
             !message[dataFelt].isMissingNode
@@ -60,7 +58,7 @@ class StatefullDataKanal(
             return false
         }.first()
         val str = if (data.second.isTextual) { data.second.asText() } else data.second.toString()
-        redisStore.set(message[Key.UUID.str].asText() + data.first, str)
+        redisStore.set(message[Key.UUID].asText() + data.first, str)
         return true
     }
 

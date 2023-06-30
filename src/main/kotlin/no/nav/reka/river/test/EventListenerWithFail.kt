@@ -1,28 +1,33 @@
 package no.nav.reka.river.test
 
+import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.composite.DelegatingEventListener
 import no.nav.reka.river.composite.DelegatingFailKanal
 import no.nav.reka.river.composite.MessageListener
+import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
 
-abstract class EventListener(val event: MessageType.Event, val rapidsConnection: RapidsConnection) : MessageListener{
+abstract class EventListenerWithFail(val rapidsConnection: RapidsConnection) : MessageListener, IEventListener, IFailListener{
+
+    abstract val event: MessageType.Event
 
     init {
-       no.nav.reka.river.test.DelegatingEventListener(this,rapidsConnection,event) {
-           accept()
-       }
+        val validation: River.PacketValidation = River.PacketValidation {
+            accept()
+        }
+
+       DelegatingEventListener(this,rapidsConnection,event, validation)
 
     }
 
     abstract fun accept() :River.PacketValidation
 
-    abstract fun onEvent(event: Event)
-    abstract fun onFail(fail: Fail)
+    abstract override fun onEvent(event: Event)
+    open override fun onFail(fail: Fail) {}
     override fun onMessage(message: Message) {
         when (message) {
             is Event ->  onEvent(message as Event)
@@ -35,5 +40,17 @@ abstract class EventListener(val event: MessageType.Event, val rapidsConnection:
    fun withFailhandling() : MessageListener {
         DelegatingFailKanal(event,this, rapidsConnection)
         return this
+    }
+
+    fun publishBehov(message: Behov) {
+        rapidsConnection.publish(message.toJsonMessage().toJson())
+    }
+
+    fun publish(message: JsonMessage) {
+        rapidsConnection.publish(message.toJson())
+    }
+
+    fun publishFail(fail: Fail) {
+        rapidsConnection.publish(fail.toJsonMessage().toJson())
     }
 }

@@ -46,7 +46,7 @@ class Behov(private val event: MessageType.Event,
         return Data(event, JsonMessage.newMessage(event.value, mapOf(Key.DATA.str() to "") + map.mapKeys { it.key.str }))
     }
 
-    fun createFail(feilmelding:String, data: Map<IKey,Any>) : Fail {
+    fun createFail(feilmelding:String, data: Map<IKey,Any> = emptyMap()) : Fail {
         return Fail.create(event, behov,feilmelding ,data.mapKeys { it.key as IKey })
     }
 

@@ -6,8 +6,9 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Data
+import no.nav.reka.river.test.IDataListener
 
-abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketListener {
+abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketListener, IDataListener {
     abstract val eventName: MessageType.Event
 
     init {
@@ -27,8 +28,8 @@ abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketL
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onData(packet)
+        onData(Data.create(packet))
     }
 
-    abstract fun onData(packet: JsonMessage)
+    abstract override fun onData(data: Data)
 }

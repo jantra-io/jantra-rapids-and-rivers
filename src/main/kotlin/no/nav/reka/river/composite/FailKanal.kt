@@ -6,8 +6,9 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Fail
+import no.nav.reka.river.test.IFailListener
 
-abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketListener {
+abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketListener, IFailListener {
     abstract val eventName: MessageType.Event
 
     init {
@@ -32,5 +33,5 @@ abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketL
         onFail(Fail.create(packet))
     }
 
-    abstract fun onFail(packet: Fail)
+    abstract override fun onFail(packet: Fail)
 }
