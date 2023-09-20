@@ -16,7 +16,7 @@ class StatefullEventKanal(
     private val dataFelter: Array<IDataFelt>,
     override val mainListener: MessageListener,
     rapidsConnection: RapidsConnection
-) : DelegatingEventListener(
+) : AbstractDelegatingEventListener(
     mainListener,
     rapidsConnection
 ) {

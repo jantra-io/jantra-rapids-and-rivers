@@ -7,8 +7,9 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
+import no.nav.reka.river.test.IEventListener
 
-abstract class EventListener(val rapidsConnection: RapidsConnection) : River.PacketListener {
+abstract class EventListener(val rapidsConnection: RapidsConnection) : River.PacketListener,IEventListener {
 
     abstract val event: MessageType.Event
 
@@ -20,7 +21,7 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : River.Pac
         ).register(this)
     }
 
-    abstract fun accept(): River.PacketValidation
+    abstract override fun accept(): River.PacketValidation
 
     private fun configureAsListener(river: River): River {
         return river.validate {
@@ -39,7 +40,7 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : River.Pac
         onEvent(Event.create(packet))
     }
 
-    abstract fun onEvent(packet: Event)
+    abstract override fun onEvent(packet: Event)
 
     fun publishFail(fail: Fail) {
         rapidsConnection.publish(fail.toJsonMessage().toJson())

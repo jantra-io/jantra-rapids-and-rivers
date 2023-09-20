@@ -26,7 +26,7 @@ abstract class EventListenerWithFail(val rapidsConnection: RapidsConnection) : M
 
     }
 
-    abstract fun accept() :River.PacketValidation
+    abstract override fun accept() :River.PacketValidation
 
     abstract override fun onEvent(event: Event)
     open override fun onFail(fail: Fail) {}

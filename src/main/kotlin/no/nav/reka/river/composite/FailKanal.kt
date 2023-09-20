@@ -21,7 +21,7 @@ abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketL
         ).register(this)
     }
 
-    open fun accept(): River.PacketValidation {
+    override fun accept(): River.PacketValidation {
         return River.PacketValidation {
             it.demandValue(Key.EVENT_NAME, eventName)
         }
