@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("My First test")
 class EventBehovEvent : EndToEndTest() {
 
     val RAW_DOCUMNET = "This is my raw document"

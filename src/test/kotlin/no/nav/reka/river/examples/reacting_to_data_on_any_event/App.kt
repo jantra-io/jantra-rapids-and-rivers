@@ -12,7 +12,7 @@ import no.nav.reka.river.redis.RedisStore
 
     fun RapidsConnection.buildReactingToData(redisStore: RedisStore): RapidsConnection {
         PersistDocument(this)
-        DocumentRecievedListener(this)
+        DocumentRecievedListener(this).start()
         JSONFormater(this)
         XMLFormater(this)
         return this

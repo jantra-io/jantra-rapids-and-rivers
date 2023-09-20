@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("My First test")
 class TestDataConsumer : EndToEndTest() {
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
         get() = { rapid:RapidsConnection, redisStore -> rapid.buildReactingToData(redisStore) }

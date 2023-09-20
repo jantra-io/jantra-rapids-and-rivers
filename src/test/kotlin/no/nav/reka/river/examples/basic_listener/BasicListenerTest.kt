@@ -13,13 +13,13 @@ import org.junit.jupiter.api.TestInstance
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("My First test")
+@DisplayName("Basic listener test")
 class BasicListenerTest : EndToEndTest() {
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
         get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBaisListenerApp(redisStore)}
     @org.junit.jupiter.api.Test
-    fun `trigger simple løser`() {
+    fun `trigger Listener and then løser`() {
 
         val applicationStarted = Event.create(EventName.APPLICATION_INITIATED,
                                         mapOf(DataFelt.APPLICATION_ID to "123"))

@@ -47,7 +47,7 @@ abstract class EventListenerWithFail(val rapidsConnection: RapidsConnection) : M
                     this@EventListenerWithFail.accept().validate(it)
                 }
             }
-        }
+        }.start()
         return this
     }
 

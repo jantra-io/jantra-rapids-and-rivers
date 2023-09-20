@@ -8,17 +8,14 @@ import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.model.Fail
+import no.nav.reka.river.newtest.FailRiver
 import no.nav.reka.river.test.IFailListener
 
-abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketListener, IFailListener {
+abstract class FailKanal(val rapidsConnection: RapidsConnection) :IFailListener {
     abstract val eventName: MessageType.Event
 
-    init {
-        configure(
-            River(rapidsConnection).apply {
-                validate(accept())
-            }
-        ).register(this)
+    fun start() {
+        FailRiver(rapidsConnection,this,accept()).start()
     }
 
     override fun accept(): River.PacketValidation {
@@ -31,10 +28,6 @@ abstract class FailKanal(val rapidsConnection: RapidsConnection) : River.PacketL
         return river.validate {
             Fail.packetValidator.validate(it)
         }
-    }
-
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onFail(Fail.create(packet))
     }
 
     abstract override fun onFail(packet: Fail)

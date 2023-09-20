@@ -6,17 +6,14 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Data
+import no.nav.reka.river.newtest.DataRiver
 import no.nav.reka.river.test.IDataListener
 
 abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketListener, IDataListener {
     abstract val eventName: MessageType.Event
 
-    init {
-        configure(
-            River(rapidsConnection).apply {
-                validate(accept())
-            }
-        ).register(this)
+    fun start() {
+        DataRiver(rapidsConnection,this,accept()).start()
     }
 
     abstract override fun accept(): River.PacketValidation

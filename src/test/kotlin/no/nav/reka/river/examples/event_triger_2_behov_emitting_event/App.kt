@@ -10,7 +10,7 @@ import no.nav.reka.river.redis.RedisStore
 
 
 fun RapidsConnection.`setup EventTriggering 2 Behov And Emitting Event`(redisStore: RedisStore): RapidsConnection {
-    DocumentRecievedListener(this)
+    DocumentRecievedListener(this).start()
     FormatDokumentService(this)
     PersistDocument(this)
     return this

@@ -25,13 +25,13 @@ class ReactToFailListener : EndToEndTest() {
                                                                 DataFelt.RAW_DOCUMENT_FORMAT to "")))
         Thread.sleep(5000)
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_DOCUMENT).first()) {
-            org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
+            Assert.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
         }
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.PERSIST_DOCUMENT).first()) {
-            org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.FORMATED_DOCUMENT.str].asText(), "This is my IBM formated document")
+            Assert.assertEquals(this[DataFelt.FORMATED_DOCUMENT.str].asText(), "This is my IBM formated document")
         }
         with(filter(EventName.DOCUMENT_PERSISTED).first()) {
-            org.junit.Assert.assertEquals(this[no.nav.reka.river.examples.basic_consumer.DataFelt.DOCUMENT_REFERECE.str].asText(), "AB123")
+            Assert.assertEquals(this[DataFelt.DOCUMENT_REFERECE.str].asText(), "AB123")
         }
     }
 
