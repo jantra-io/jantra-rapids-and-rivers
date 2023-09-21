@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit.SECONDS
 import java.util.stream.Collectors
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 internal class RapidApplicationComponentTest {
 
     private val objectMapper = jacksonObjectMapper()

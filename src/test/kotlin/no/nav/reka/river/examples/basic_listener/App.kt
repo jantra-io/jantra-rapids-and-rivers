@@ -7,7 +7,7 @@ import no.nav.reka.river.redis.RedisStore
 
 
 
-fun RapidsConnection.buildBaisListenerApp(redisStore: RedisStore): RapidsConnection {
+fun RapidsConnection.buildBasicListenerApp(redisStore: RedisStore): RapidsConnection {
     RetrieveFullNameService(this)
     ApplicationStartedListener(this).start()
 

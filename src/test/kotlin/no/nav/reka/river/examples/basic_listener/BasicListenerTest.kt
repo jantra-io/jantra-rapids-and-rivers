@@ -17,7 +17,7 @@ import org.junit.jupiter.api.TestInstance
 class BasicListenerTest : EndToEndTest() {
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBaisListenerApp(redisStore)}
+        get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBasicListenerApp(redisStore)}
     @org.junit.jupiter.api.Test
     fun `trigger Listener and then løser`() {
 

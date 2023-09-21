@@ -42,14 +42,20 @@ class ListenerBuilder {
     class EventListenerBuilder(private val listenerBuilder: ListenerBuilder) {
         lateinit var listener: IEventListener
         lateinit var rapidsConnection: RapidsConnection
+        lateinit var accepts: River.PacketValidation
 
         fun implementation(listener: IEventListener) : EventListenerBuilder {
             this.listener = listener
             return this
         }
 
+        fun accept(accepts: River.PacketValidation) {
+            this.accepts = accepts
+        }
+
         fun build() : ListenerBuilder {
-            listenerBuilder.eventRiver = EventRiver(rapidsConnection,listener,listener.accept())
+            val validation = if (::accepts.isInitialized) accepts else listener.accept()
+            listenerBuilder.eventRiver = EventRiver(rapidsConnection,listener, validation)
             return listenerBuilder
         }
 
@@ -57,13 +63,17 @@ class ListenerBuilder {
 
     class FailListenerBuilder(private val listenerBuilder: ListenerBuilder) {
         lateinit var riverValidation : River.PacketValidation
-        lateinit var listenerValidation: River.PacketValidation
+        lateinit var accepts: River.PacketValidation
         lateinit var listener: IFailListener
         lateinit var rapidsConnection: RapidsConnection
 
         fun implementation(listener: IFailListener) : FailListenerBuilder {
             this.listener = listener
             return this
+        }
+
+        fun accept(accepts: River.PacketValidation) {
+            this.accepts = accepts
         }
 
         fun build() : ListenerBuilder {

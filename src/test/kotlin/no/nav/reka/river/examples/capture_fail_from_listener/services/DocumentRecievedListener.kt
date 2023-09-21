@@ -9,10 +9,13 @@ import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.test.EventListenerWithFail
+import no.nav.reka.river.test.IEventListener
+import no.nav.reka.river.test.IFailListener
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : EventListenerWithFail(rapidsConnection) {
-    override val event: MessageType.Event  get() = EventName.DOCUMENT_RECIEVED
+class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : IEventListener,IFailListener {
+    val event: MessageType.Event  get() = EventName.DOCUMENT_RECIEVED
+    val rapid = Rapid(rapidsConnection)
+
     override fun accept(): River.PacketValidation  {
         return River.PacketValidation {
             it.demandValue(Key.EVENT_NAME,event)
@@ -21,13 +24,13 @@ class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : EventList
     }
 
     override fun onEvent(packet: Event) {
-        publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT],
+        rapid.publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT],
                                                                          DataFelt.RAW_DOCUMENT_FORMAT to "ebcdic")))
     }
 
     override fun onFail(fail: Fail) {
 
-        publishBehov(Behov.create(event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
+        rapid.publishBehov(Behov.create(event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
     }
 
 }

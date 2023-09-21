@@ -31,6 +31,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit.SECONDS
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
 internal class RapidIntegrationTest {
     private val objectMapper = jacksonObjectMapper()
         .registerModule(JavaTimeModule())

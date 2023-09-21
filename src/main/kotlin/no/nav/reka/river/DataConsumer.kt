@@ -8,23 +8,17 @@ import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
+import no.nav.reka.river.newtest.DataRiver
+import no.nav.reka.river.newtest.EventRiver
+import no.nav.reka.river.test.IDataListener
 
-abstract class DataConsumer(val rapidsConnection: RapidsConnection): River.PacketListener {
-    init {
-        configure(
-                River(rapidsConnection).apply {
-                    validate(accept())
-                }
-        ).register(this)
+abstract class DataConsumer(val rapidsConnection: RapidsConnection): IDataListener {
+
+    fun start() {
+        DataRiver(rapidsConnection,this,accept()).start()
     }
 
-    abstract fun accept(): River.PacketValidation
-
-    private fun configure(river: River): River {
-        return river.validate {
-            Data.packetValidator.validate(it)
-        }
-    }
+    abstract override fun accept(): River.PacketValidation
 
     fun publishData(data: Data) {
         rapidsConnection.publish(data.toJsonMessage().toJson())
@@ -41,10 +35,4 @@ abstract class DataConsumer(val rapidsConnection: RapidsConnection): River.Packe
     fun publishFail(fail: Fail) {
         rapidsConnection.publish(fail.toJsonMessage().toJson())
     }
-
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onData(Data.create(packet))
-    }
-
-    abstract fun onData(packet: Data)
 }

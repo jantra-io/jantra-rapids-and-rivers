@@ -1,5 +1,6 @@
 package no.nav.reka.river.test
 
+import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
@@ -13,6 +14,8 @@ interface ValidatedMessage {
 interface IEventListener : ValidatedMessage {
 
     fun onEvent(event: Event)
+
+
 }
 
 

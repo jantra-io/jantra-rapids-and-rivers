@@ -2,7 +2,6 @@ package no.nav.reka.river.examples.basic_consumer
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.EndToEndTest
-import no.nav.reka.river.examples.basic_listener.buildBaisListenerApp
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.redis.RedisStore
 import org.junit.Assert

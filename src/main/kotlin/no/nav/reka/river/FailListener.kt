@@ -1,24 +1,18 @@
 package no.nav.reka.river
 
 import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.newtest.EventRiver
-import no.nav.reka.river.test.IEventListener
+import no.nav.reka.river.test.IFailListener
 
-abstract class EventListener(val rapidsConnection: RapidsConnection) : IEventListener {
-
-    abstract val event: MessageType.Event
-
-    fun start() {
-        EventRiver(rapidsConnection,this,accept()).start()
+abstract class FailListener(val rapidsConnection: RapidsConnection) : IFailListener {
+    override fun onFail(fail: Fail) {
+        TODO("Not yet implemented")
     }
 
-    abstract override fun accept(): River.PacketValidation
     fun publishBehov(message: Behov) {
         rapidsConnection.publish(message.toJsonMessage().toJson())
     }
@@ -26,10 +20,8 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : IEventLis
     fun publish(message: JsonMessage) {
         rapidsConnection.publish(message.toJson())
     }
-    
-    abstract override fun onEvent(packet: Event)
-
     fun publishFail(fail: Fail) {
         rapidsConnection.publish(fail.toJsonMessage().toJson())
     }
+
 }
