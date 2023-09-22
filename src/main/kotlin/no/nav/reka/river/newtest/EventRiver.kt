@@ -4,12 +4,10 @@ import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.EventListener
-import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Event
-import no.nav.reka.river.test.IEventListener
+import no.nav.reka.river.IEventListener
 
-class EventRiver(val rapidsConnection: RapidsConnection,val eventListener: IEventListener, private val riverValidation:River.PacketValidation) : River.PacketListener{
+class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEventListener, private val riverValidation:River.PacketValidation) : River.PacketListener{
 
     fun start() {
         configureAsEventListener(

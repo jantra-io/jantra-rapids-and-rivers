@@ -1,6 +1,5 @@
-package no.nav.reka.river.test
+package no.nav.reka.river
 
-import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event

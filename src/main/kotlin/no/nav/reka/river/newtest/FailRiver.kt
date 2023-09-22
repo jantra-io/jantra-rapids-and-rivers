@@ -4,10 +4,8 @@ import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.test.IEventListener
-import no.nav.reka.river.test.IFailListener
+import no.nav.reka.river.IFailListener
 
 class FailRiver (val rapidsConnection: RapidsConnection, val failListener: IFailListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
 

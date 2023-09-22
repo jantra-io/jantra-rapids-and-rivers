@@ -5,10 +5,7 @@ import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Data
-import no.nav.reka.river.model.Event
-import no.nav.reka.river.model.Fail
-import no.nav.reka.river.test.IDataListener
-import no.nav.reka.river.test.IEventListener
+import no.nav.reka.river.IDataListener
 
 class DataRiver (val rapidsConnection: RapidsConnection, val dataListener: IDataListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
 

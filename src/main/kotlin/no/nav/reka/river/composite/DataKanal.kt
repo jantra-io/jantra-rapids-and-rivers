@@ -7,26 +7,21 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.newtest.DataRiver
-import no.nav.reka.river.test.IDataListener
+import no.nav.reka.river.IDataListener
+import no.nav.reka.river.Key
+import no.nav.reka.river.demandValue
 
-abstract class DataKanal(val rapidsConnection: RapidsConnection) : River.PacketListener, IDataListener {
+abstract class DataKanal(val rapidsConnection: RapidsConnection) : IDataListener {
     abstract val eventName: MessageType.Event
 
     fun start() {
         DataRiver(rapidsConnection,this,accept()).start()
     }
 
-    abstract override fun accept(): River.PacketValidation
-
-    private fun configure(river: River): River {
-        return river.validate {
-            Data.packetValidator.validate(it)
+    override fun accept() : River.PacketValidation {
+        return River.PacketValidation {
+            it.demandValue(Key.EVENT_NAME, eventName)
         }
     }
 
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        onData(Data.create(packet))
-    }
-
-    abstract override fun onData(data: Data)
 }

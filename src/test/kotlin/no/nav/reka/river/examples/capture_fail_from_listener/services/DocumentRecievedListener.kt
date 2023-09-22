@@ -9,10 +9,10 @@ import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.test.IEventListener
-import no.nav.reka.river.test.IFailListener
+import no.nav.reka.river.IEventListener
+import no.nav.reka.river.IFailListener
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : IEventListener,IFailListener {
+class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : IEventListener, IFailListener {
     val event: MessageType.Event  get() = EventName.DOCUMENT_RECIEVED
     val rapid = Rapid(rapidsConnection)
 

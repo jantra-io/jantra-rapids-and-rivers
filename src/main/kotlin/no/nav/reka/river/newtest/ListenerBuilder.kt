@@ -4,9 +4,9 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.test.IDataListener
-import no.nav.reka.river.test.IEventListener
-import no.nav.reka.river.test.IFailListener
+import no.nav.reka.river.IDataListener
+import no.nav.reka.river.IEventListener
+import no.nav.reka.river.IFailListener
 
 
 class ListenerBuilder(val rapid:RapidsConnection) {

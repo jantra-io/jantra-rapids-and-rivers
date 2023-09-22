@@ -1,7 +1,5 @@
 package no.nav.reka.river
 
-import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
@@ -9,8 +7,6 @@ import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.newtest.DataRiver
-import no.nav.reka.river.newtest.EventRiver
-import no.nav.reka.river.test.IDataListener
 
 abstract class DataConsumer(val rapidsConnection: RapidsConnection): IDataListener {
 

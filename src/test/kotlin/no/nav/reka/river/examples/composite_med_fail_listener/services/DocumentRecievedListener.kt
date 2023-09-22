@@ -5,13 +5,11 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.*
 import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
-import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.newtest.CompositeListener
-import no.nav.reka.river.test.EventListenerWithFail
 
 class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : CompositeListener(Rapid(rapidsConnection)) {
 
