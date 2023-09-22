@@ -1,12 +1,9 @@
 package no.nav.reka.river.composite
 
-import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.model.Data
-import no.nav.reka.river.newtest.DataRiver
+import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.demandValue

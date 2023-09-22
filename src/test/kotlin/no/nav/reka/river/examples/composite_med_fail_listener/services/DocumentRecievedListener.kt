@@ -9,11 +9,12 @@ import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.newtest.CompositeListener
+import no.nav.reka.river.bridge.CompositeListener
+import no.nav.reka.river.examples.basic_consumer.EventName
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : CompositeListener(Rapid(rapidsConnection)) {
+class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val rapid: Rapid = Rapid(rapidsConnection) ) : CompositeListener {
 
-    val event:MessageType.Event = InternalEvent("noe")
+    val event:MessageType.Event get() = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation  {
         return River.PacketValidation {
             it.demandValue(Key.EVENT_NAME,event)

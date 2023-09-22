@@ -6,7 +6,7 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.newtest.EventRiver
+import no.nav.reka.river.bridge.EventRiver
 
 abstract class EventListener(val rapidsConnection: RapidsConnection) : IEventListener {
 

@@ -6,7 +6,7 @@ import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.newtest.FailRiver
+import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.IFailListener
 
 abstract class FailKanal(val rapidsConnection: RapidsConnection) : IFailListener {

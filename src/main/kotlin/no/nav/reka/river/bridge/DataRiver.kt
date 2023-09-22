@@ -1,4 +1,4 @@
-package no.nav.reka.river.newtest
+package no.nav.reka.river.bridge
 
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
@@ -10,14 +10,14 @@ import no.nav.reka.river.IDataListener
 class DataRiver (val rapidsConnection: RapidsConnection, val dataListener: IDataListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
 
     fun start() {
-        configureAsDataListener(
+        configure(
             River(rapidsConnection).apply {
                 validate(riverValidation)
             }
         ).register(this)
     }
 
-    private fun configureAsDataListener(river: River): River {
+    private fun configure(river: River): River {
         return river.validate {
             Data.packetValidator.validate(it)
         }

@@ -6,7 +6,7 @@ import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
-import no.nav.reka.river.newtest.DataRiver
+import no.nav.reka.river.bridge.DataRiver
 
 abstract class DataConsumer(val rapidsConnection: RapidsConnection): IDataListener {
 

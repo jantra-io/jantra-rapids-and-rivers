@@ -1,6 +1,7 @@
 package no.nav.reka.river
 
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
@@ -26,5 +27,10 @@ interface  IFailListener : ValidatedMessage {
 interface IDataListener : ValidatedMessage {
 
     fun onData(data: Data)
+}
+
+interface IBehovListener : ValidatedMessage {
+
+    fun onBehov(behov: Behov)
 }
 

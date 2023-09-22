@@ -1,8 +1,6 @@
 package no.nav.reka.river.examples.capture_fail_from_listener
 
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.Key
 import no.nav.reka.river.examples.basic_consumer.DataFelt
 import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.examples.capture_fail_from_listener.services.DocumentRecievedListener
@@ -10,10 +8,10 @@ import no.nav.reka.river.examples.capture_fail_from_listener.services.FormatDoku
 import no.nav.reka.river.examples.capture_fail_from_listener.services.LegacyIBMFormatter
 import no.nav.reka.river.examples.capture_fail_from_listener.services.PersistDocument
 import no.nav.reka.river.interestedIn
-import no.nav.reka.river.newtest.ListenerBuilder
+import no.nav.reka.river.bridge.ListenerBuilder
 import no.nav.reka.river.redis.RedisStore
 
-fun RapidsConnection.`setup EventListener reacting to Failure`(redisStore: RedisStore): RapidsConnection {
+fun RapidsConnection.`setup EventListener reacting to Failure`(): RapidsConnection {
     val documentRecieved = DocumentRecievedListener(this)
     ListenerBuilder(this)
         .eventListener(EventName.DOCUMENT_RECIEVED)
@@ -26,8 +24,8 @@ fun RapidsConnection.`setup EventListener reacting to Failure`(redisStore: Redis
         }
         .build()
         .start()
-    FormatDokumentService(this)
-    LegacyIBMFormatter(this)
-    PersistDocument(this)
+    FormatDokumentService(this).start()
+    LegacyIBMFormatter(this).start()
+    PersistDocument(this).start()
     return this
 }
