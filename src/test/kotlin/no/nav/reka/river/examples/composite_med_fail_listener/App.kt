@@ -8,7 +8,7 @@ import no.nav.reka.river.newtest.ListenerBuilder
 
 fun RapidsConnection.`setup EventListener reacting to Failure`(): RapidsConnection {
     val documentListener = DocumentRecievedListener(this)
-    ListenerBuilder()
+    ListenerBuilder(this)
             .eventListener(EventName.DOCUMENT_RECIEVED)
             .implementation(documentListener)
             .build()

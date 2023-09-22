@@ -10,7 +10,7 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.test.IDataListener
 import no.nav.reka.river.test.IEventListener
 
-class DataRiver (val rapidsConnection: RapidsConnection, val eventListener: IDataListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
+class DataRiver (val rapidsConnection: RapidsConnection, val dataListener: IDataListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
 
     fun start() {
         configureAsDataListener(
@@ -27,7 +27,7 @@ class DataRiver (val rapidsConnection: RapidsConnection, val eventListener: IDat
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        eventListener.onData(Data.create(packet))
+        dataListener.onData(Data.create(packet))
     }
 
 

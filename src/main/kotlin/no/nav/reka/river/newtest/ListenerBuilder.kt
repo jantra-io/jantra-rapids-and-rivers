@@ -4,14 +4,13 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.rapidsConnection
 import no.nav.reka.river.test.IDataListener
 import no.nav.reka.river.test.IEventListener
 import no.nav.reka.river.test.IFailListener
 
 
-class ListenerBuilder {
-    val rapid = rapidsConnection
+class ListenerBuilder(val rapid:RapidsConnection) {
+
     lateinit var event: MessageType.Event
     private lateinit var eventRiver: EventRiver
     private lateinit var dataRiver:  DataRiver
@@ -30,18 +29,17 @@ class ListenerBuilder {
     }
 
     fun dataListener() : DataListenerBuilder {
-        return DataListenerBuilder(this, rapidsConnection)
+        return DataListenerBuilder(this)
     }
 
     fun start() {
-        eventRiver.start()
-        dataRiver.start()
-        failRiver.start()
+        if (::eventRiver.isInitialized) eventRiver.start()
+        if (::dataRiver.isInitialized)  dataRiver.start()
+        if (::failRiver.isInitialized)  failRiver.start()
     }
 
     class EventListenerBuilder(private val listenerBuilder: ListenerBuilder) {
         lateinit var listener: IEventListener
-        lateinit var rapidsConnection: RapidsConnection
         lateinit var accepts: River.PacketValidation
 
         fun implementation(listener: IEventListener) : EventListenerBuilder {
@@ -55,7 +53,7 @@ class ListenerBuilder {
 
         fun build() : ListenerBuilder {
             val validation = if (::accepts.isInitialized) accepts else listener.accept()
-            listenerBuilder.eventRiver = EventRiver(rapidsConnection,listener, validation)
+            listenerBuilder.eventRiver = EventRiver(listenerBuilder.rapid,listener, validation)
             return listenerBuilder
         }
 
@@ -65,28 +63,29 @@ class ListenerBuilder {
         lateinit var riverValidation : River.PacketValidation
         lateinit var accepts: River.PacketValidation
         lateinit var listener: IFailListener
-        lateinit var rapidsConnection: RapidsConnection
 
         fun implementation(listener: IFailListener) : FailListenerBuilder {
             this.listener = listener
             return this
         }
 
-        fun accept(accepts: River.PacketValidation) {
+        fun accept(accepts: River.PacketValidation) : FailListenerBuilder {
             this.accepts = accepts
+            return this
         }
 
         fun build() : ListenerBuilder {
             if (!this::riverValidation.isInitialized) riverValidation = River.PacketValidation {
                 it.demandValue(Key.EVENT_NAME.str,listenerBuilder.event.value)
+                accepts.validate(it)
             }
-            listenerBuilder.failRiver = FailRiver(rapidsConnection,listener,riverValidation)
+            listenerBuilder.failRiver = FailRiver(listenerBuilder.rapid,listener,riverValidation)
             return listenerBuilder
         }
 
     }
 
-    class DataListenerBuilder(private val listenerBuilder: ListenerBuilder,rapidsConnection: RapidsConnection) {
+    class DataListenerBuilder(private val listenerBuilder: ListenerBuilder) {
         lateinit var riverValidation : River.PacketValidation
         lateinit var listenerValidation: River.PacketValidation
         lateinit var listener: IDataListener
@@ -96,11 +95,15 @@ class ListenerBuilder {
             return this
         }
 
+        fun accept(validation: River.PacketValidation) {
+            this.listenerValidation = validation
+        }
+
         fun build() : IDataListener {
             if (!this::riverValidation.isInitialized) riverValidation = River.PacketValidation {
                 it.demandValue(Key.EVENT_NAME.str,listenerBuilder.event.value)
             }
-            listenerBuilder.dataRiver = DataRiver(rapidsConnection,listener,riverValidation)
+            listenerBuilder.dataRiver = DataRiver(listenerBuilder.rapid,listener,riverValidation)
             return listener
         }
 

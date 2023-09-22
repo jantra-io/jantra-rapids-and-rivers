@@ -43,7 +43,6 @@ class TestDataConsumer : EndToEndTest() {
         with(filter(EventName.DOCUMENT_PERSISTED).first()) {
             Assertions.assertEquals(this[DataFelt.DOCUMENT_REFERECE.str].asText(),"AB123")
         }
-
     }
 
 }
