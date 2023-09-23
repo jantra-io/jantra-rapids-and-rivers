@@ -13,7 +13,7 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : IEventLis
     abstract val event: MessageType.Event
 
     fun start() {
-        EventRiver(rapidsConnection,this,accept()).start()
+        EventRiver(rapidsConnection,this,accept() + { it.demandValue(Key.EVENT_NAME, event) }).start()
     }
 
     abstract override fun accept(): River.PacketValidation

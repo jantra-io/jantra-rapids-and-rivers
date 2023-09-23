@@ -11,7 +11,6 @@ import no.nav.reka.river.model.Event
 class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : EventListener(rapidsConnection) {
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME,event)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
     }
 

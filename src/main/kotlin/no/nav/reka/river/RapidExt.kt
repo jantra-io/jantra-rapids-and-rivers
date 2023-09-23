@@ -1,6 +1,7 @@
 package no.nav.reka.river
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
@@ -35,3 +36,10 @@ fun RapidsConnection.publish(message: Message) {
     this.publish(message.toJsonMessage().toJson())
 }
 
+
+operator fun River.PacketValidation.plus(validation: River.PacketValidation) : River.PacketValidation {
+    return River.PacketValidation {
+        this.validate(it)
+        validation.validate(it)
+    }
+}
