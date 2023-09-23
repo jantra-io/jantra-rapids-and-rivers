@@ -17,17 +17,6 @@ abstract class EventListener(val rapidsConnection: RapidsConnection) : IEventLis
     }
 
     abstract override fun accept(): River.PacketValidation
-    fun publishBehov(message: Behov) {
-        rapidsConnection.publish(message.toJsonMessage().toJson())
-    }
-
-    fun publish(message: JsonMessage) {
-        rapidsConnection.publish(message.toJson())
-    }
-    
     abstract override fun onEvent(packet: Event)
 
-    fun publishFail(fail: Fail) {
-        rapidsConnection.publish(fail.toJsonMessage().toJson())
-    }
 }

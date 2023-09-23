@@ -2,7 +2,7 @@ package no.nav.reka.river.examples.reacting_to_data_on_any_event.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.Consumer
+import no.nav.reka.river.Løser
 import no.nav.reka.river.Key
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.examples.basic_consumer.BehovName
@@ -10,8 +10,9 @@ import no.nav.reka.river.examples.basic_consumer.DataFelt
 import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.interestedIn
 import no.nav.reka.river.model.Behov
+import no.nav.reka.river.publish
 
-class JSONFormater(rapidsConnection: RapidsConnection) : Consumer(rapidsConnection ) {
+class JSONFormater(rapidsConnection: RapidsConnection) : Løser(rapidsConnection ) {
     override fun accept(): River.PacketValidation = River.PacketValidation {
         it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
         it.demandValue(Key.BEHOV, BehovName.FORMAT_JSON)
@@ -19,6 +20,6 @@ class JSONFormater(rapidsConnection: RapidsConnection) : Consumer(rapidsConnecti
     }
 
     override fun onBehov(packet: Behov) {
-        publishData(packet.createData(mapOf(DataFelt.FORMATED_DOCUMENT to "My json formatted document")))
+       rapidsConnection.publish(packet.createData(mapOf(DataFelt.FORMATED_DOCUMENT to "My json formatted document")))
     }
 }

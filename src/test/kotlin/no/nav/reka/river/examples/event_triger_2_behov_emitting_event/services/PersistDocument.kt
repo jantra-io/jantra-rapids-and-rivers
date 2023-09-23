@@ -2,7 +2,7 @@ package no.nav.reka.river.examples.event_triger_2_behov_emitting_event.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.Consumer
+import no.nav.reka.river.Løser
 import no.nav.reka.river.Key
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.examples.basic_consumer.BehovName
@@ -11,8 +11,9 @@ import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.interestedIn
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
+import no.nav.reka.river.publish
 
-class PersistDocument(rapidsConnection: RapidsConnection) : Consumer(rapidsConnection) {
+class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
     override fun accept(): River.PacketValidation = River.PacketValidation {
         it.demandValue(Key.BEHOV,BehovName.PERSIST_DOCUMENT)
         it.interestedIn(DataFelt.FORMATED_DOCUMENT)
@@ -24,6 +25,6 @@ class PersistDocument(rapidsConnection: RapidsConnection) : Consumer(rapidsConne
     }
     override fun onBehov(packet: Behov) {
         val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        publishEvent(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to "AB123")))
+        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to "AB123")))
     }
 }

@@ -2,23 +2,14 @@ package no.nav.reka.river
 
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.reka.river.bridge.EventRiver
+import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Fail
 
 abstract class FailListener(val rapidsConnection: RapidsConnection) : IFailListener {
-    override fun onFail(fail: Fail) {
-        TODO("Not yet implemented")
-    }
-
-    fun publishBehov(message: Behov) {
-        rapidsConnection.publish(message.toJsonMessage().toJson())
-    }
-
-    fun publish(message: JsonMessage) {
-        rapidsConnection.publish(message.toJson())
-    }
-    fun publishFail(fail: Fail) {
-        rapidsConnection.publish(fail.toJsonMessage().toJson())
+    fun start() {
+        FailRiver(rapidsConnection,this,accept()).start()
     }
 
 }

@@ -2,6 +2,7 @@ package no.nav.reka.river.model
 
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.helse.rapids_rivers.JsonMessage
+import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.*
 import no.nav.reka.river.InternalBehov

@@ -22,6 +22,6 @@ class PersistDocument(rapidsConnection: RapidsConnection) : DataConsumer(rapidsC
     }
     override fun onData(packet: Data) {
         val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        publishEvent(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to ref)))
+        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to ref)))
     }
 }

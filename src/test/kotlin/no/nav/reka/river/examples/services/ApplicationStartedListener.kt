@@ -9,6 +9,7 @@ import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
 import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.model.Event
+import no.nav.reka.river.publish
 
 class ApplicationStartedListener(rapidsConnection: RapidsConnection) : EventListener(rapidsConnection) {
     override val event: MessageType.Event = EventName.APPLICATION_INITIATED
@@ -17,6 +18,6 @@ class ApplicationStartedListener(rapidsConnection: RapidsConnection) : EventList
     }
 
     override fun onEvent(packet: Event) {
-        publishBehov(packet.createBehov(BehovName.FULL_NAME, mapOf(DataFelt.APPLICATION_ID to "123")))
+        rapidsConnection.publish(packet.createBehov(BehovName.FULL_NAME, mapOf(DataFelt.APPLICATION_ID to "123")))
     }
 }
