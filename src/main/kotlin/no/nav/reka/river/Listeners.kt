@@ -18,7 +18,6 @@ interface IEventListener : ValidatedMessage {
 
 }
 
-
 interface  IFailListener : ValidatedMessage {
     fun onFail(fail: Fail)
 

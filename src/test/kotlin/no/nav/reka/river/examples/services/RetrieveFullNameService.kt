@@ -3,7 +3,8 @@ package no.nav.reka.river.examples.services
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.Key
-import no.nav.reka.river.Løser
+import no.nav.reka.river.basic.Løser
+import no.nav.reka.river.MessageType
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
@@ -11,6 +12,8 @@ import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.publish
 
 class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
+
+    override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
         it.demandValue(Key.EVENT_NAME, EventName.APPLICATION_INITIATED)
         it.demandValue(Key.BEHOV, BehovName.FULL_NAME)

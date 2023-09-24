@@ -2,7 +2,7 @@ package no.nav.reka.river.examples.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
-import no.nav.reka.river.EventListener
+import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.examples.basic_consumer.BehovName

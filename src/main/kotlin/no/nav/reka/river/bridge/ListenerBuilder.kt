@@ -7,6 +7,8 @@ import no.nav.reka.river.MessageType
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
+import no.nav.reka.river.demandValue
+import no.nav.reka.river.plus
 
 
 class ListenerBuilder(val rapid:RapidsConnection) {
@@ -16,7 +18,6 @@ class ListenerBuilder(val rapid:RapidsConnection) {
     private lateinit var dataRiver:  DataRiver
     private lateinit var failRiver: FailRiver
 
-    lateinit var eventlistenerBuilder: EventListenerBuilder
 
 
     fun eventListener(event: MessageType.Event) : EventListenerBuilder {
@@ -52,7 +53,7 @@ class ListenerBuilder(val rapid:RapidsConnection) {
         }
 
         fun build() : ListenerBuilder {
-            val validation = if (::accepts.isInitialized) accepts else listener.accept()
+            val validation = if (::accepts.isInitialized) accepts else listener.accept() + River.PacketValidation{it.demandValue(Key.EVENT_NAME,listenerBuilder.event)}
             listenerBuilder.eventRiver = EventRiver(listenerBuilder.rapid,listener, validation)
             return listenerBuilder
         }

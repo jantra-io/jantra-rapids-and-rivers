@@ -3,6 +3,7 @@ package no.nav.reka.river.examples.event_triger_2_behov_emitting_event.services
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.*
+import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
 import no.nav.reka.river.examples.basic_consumer.EventName
