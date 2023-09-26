@@ -1,4 +1,4 @@
-package no.nav.reka.river.bridge
+package no.nav.reka.river.configuration
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -7,6 +7,9 @@ import no.nav.reka.river.MessageType
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
+import no.nav.reka.river.bridge.DataRiver
+import no.nav.reka.river.bridge.EventRiver
+import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.plus
 
@@ -15,7 +18,7 @@ class ListenerBuilder(val rapid:RapidsConnection) {
 
     lateinit var event: MessageType.Event
     private lateinit var eventRiver: EventRiver
-    private lateinit var dataRiver:  DataRiver
+    private lateinit var dataRiver: DataRiver
     private lateinit var failRiver: FailRiver
 
 
@@ -61,7 +64,6 @@ class ListenerBuilder(val rapid:RapidsConnection) {
     }
 
     class FailListenerBuilder(private val listenerBuilder: ListenerBuilder) {
-        lateinit var riverValidation : River.PacketValidation
         lateinit var accepts: River.PacketValidation
         lateinit var listener: IFailListener
 
@@ -76,36 +78,34 @@ class ListenerBuilder(val rapid:RapidsConnection) {
         }
 
         fun build() : ListenerBuilder {
-            if (!this::riverValidation.isInitialized) riverValidation = River.PacketValidation {
+            if (!this::accepts.isInitialized) accepts = River.PacketValidation {
                 it.demandValue(Key.EVENT_NAME.str,listenerBuilder.event.value)
-                accepts.validate(it)
             }
-            listenerBuilder.failRiver = FailRiver(listenerBuilder.rapid,listener,riverValidation)
+            listenerBuilder.failRiver = FailRiver(listenerBuilder.rapid,listener,accepts)
             return listenerBuilder
         }
 
     }
 
     class DataListenerBuilder(private val listenerBuilder: ListenerBuilder) {
-        lateinit var riverValidation : River.PacketValidation
-        lateinit var listenerValidation: River.PacketValidation
+        lateinit var accepts: River.PacketValidation
         lateinit var listener: IDataListener
 
-        fun failListener(listener: IDataListener) : DataListenerBuilder {
+        fun dataListener(listener: IDataListener) : DataListenerBuilder {
             this.listener = listener
             return this
         }
 
         fun accept(validation: River.PacketValidation) {
-            this.listenerValidation = validation
+            this.accepts = validation
         }
 
-        fun build() : IDataListener {
-            if (!this::riverValidation.isInitialized) riverValidation = River.PacketValidation {
+        fun build() : ListenerBuilder {
+            if (!this::accepts.isInitialized) accepts = River.PacketValidation {
                 it.demandValue(Key.EVENT_NAME.str,listenerBuilder.event.value)
             }
-            listenerBuilder.dataRiver = DataRiver(listenerBuilder.rapid,listener,riverValidation)
-            return listener
+            listenerBuilder.dataRiver = DataRiver(listenerBuilder.rapid,listener,accepts)
+            return listenerBuilder
         }
 
     }

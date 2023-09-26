@@ -7,28 +7,30 @@ import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 
 
+interface IMessageListener
+
 interface ValidatedMessage {
     fun accept(): River.PacketValidation
 }
 
-interface IEventListener : ValidatedMessage {
+interface IEventListener : IMessageListener,ValidatedMessage {
 
     fun onEvent(event: Event)
 
 
 }
 
-interface  IFailListener : ValidatedMessage {
+interface  IFailListener : IMessageListener,ValidatedMessage {
     fun onFail(fail: Fail)
 
 }
 
-interface IDataListener : ValidatedMessage {
+interface IDataListener : IMessageListener,ValidatedMessage {
 
     fun onData(data: Data)
 }
 
-interface IBehovListener : ValidatedMessage {
+interface IBehovListener : IMessageListener,ValidatedMessage {
 
     fun onBehov(behov: Behov)
 }

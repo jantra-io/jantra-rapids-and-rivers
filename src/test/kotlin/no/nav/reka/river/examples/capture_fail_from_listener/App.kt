@@ -8,8 +8,7 @@ import no.nav.reka.river.examples.capture_fail_from_listener.services.FormatDoku
 import no.nav.reka.river.examples.capture_fail_from_listener.services.LegacyIBMFormatter
 import no.nav.reka.river.examples.capture_fail_from_listener.services.PersistDocument
 import no.nav.reka.river.interestedIn
-import no.nav.reka.river.bridge.ListenerBuilder
-import no.nav.reka.river.redis.RedisStore
+import no.nav.reka.river.configuration.ListenerBuilder
 
 fun RapidsConnection.`setup EventListener reacting to Failure`(): RapidsConnection {
     val documentRecieved = DocumentRecievedListener(this)
