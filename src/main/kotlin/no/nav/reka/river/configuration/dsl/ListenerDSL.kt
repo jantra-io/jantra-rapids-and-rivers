@@ -1,7 +1,9 @@
 package no.nav.reka.river.configuration.dsl
 
+import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
 import no.nav.reka.river.Key
@@ -9,6 +11,7 @@ import no.nav.reka.river.MessageType
 import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
+import no.nav.reka.river.configuration.ListenerBuilder
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.plus
 
@@ -23,6 +26,10 @@ class ListenerDSLBuilder(private val rapid:RapidsConnection) {
     @DSLListener
     fun eventListener(block: EventListenerDSLBuilder.()->Unit)  {
         eventRiver = EventListenerDSLBuilder(event,rapid).apply(block).build()
+    }
+
+    fun dataListener(block: DataListenerDSLBuilder.()->Unit) {
+        dataRiver = DataListenerDSLBuilder(event,rapid).apply(block).build()
     }
     @DSLListener
     fun failListener(block: FailListenerDSLBuilder.()->Unit) {
@@ -69,6 +76,26 @@ class FailListenerDSLBuilder(private val event: MessageType.Event, private val r
             it.demandValue(Key.EVENT_NAME.str,event.value)
         }
         return FailRiver(rapid,implementation,accept)
+    }
+
+}
+
+class DataListenerDSLBuilder(private val event: MessageType.Event, private val rapid: RapidsConnection) {
+    private lateinit var accept: River.PacketValidation
+    @DSLListener
+    lateinit var implementation: IDataListener
+
+
+    @DSLListener
+    fun accepts(jsonMessage: (JsonMessage) -> Unit)  {
+        accept = River.PacketValidation {  }.apply { jsonMessage }
+    }
+
+    fun build() : DataRiver {
+        if (!this::accept.isInitialized) accept = River.PacketValidation {
+            it.demandValue(Key.EVENT_NAME.str,event.value)
+        }
+        return DataRiver(rapid,implementation,accept)
     }
 
 }

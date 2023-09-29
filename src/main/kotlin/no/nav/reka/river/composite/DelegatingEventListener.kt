@@ -4,7 +4,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.model.Event
 
-abstract class AbstractDelegatingEventListener(open val mainListener: MessageListener, rapidsConnection: RapidsConnection) : EventListener(rapidsConnection) {
+abstract class DelegatingEventListener(open val mainListener: MessageListener, rapidsConnection: RapidsConnection) : EventListener(rapidsConnection) {
 
     override fun onEvent(packet: Event) {
         mainListener.onMessage(packet)

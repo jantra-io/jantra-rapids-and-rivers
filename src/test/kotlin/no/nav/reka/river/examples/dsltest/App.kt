@@ -1,14 +1,53 @@
 package no.nav.reka.river.examples.dsltest
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.reka.river.Key
+import no.nav.reka.river.bridge.BehovRiver
 import no.nav.reka.river.examples.basic_consumer.EventName
 import no.nav.reka.river.configuration.dsl.listener
 import no.nav.reka.river.configuration.dsl.topology
+import no.nav.reka.river.demandValue
+import no.nav.reka.river.examples.basic_consumer.BehovName
 import no.nav.reka.river.examples.basic_consumer.DataFelt
-import no.nav.reka.river.examples.composite_med_fail_listener.services.DocumentRecievedListener
+import no.nav.reka.river.examples.dsltest.services.DocumentRecievedListener
+import no.nav.reka.river.examples.dsltest.services.FormatDokumentService
+import no.nav.reka.river.examples.dsltest.services.LegacyIBMFormatter
+import no.nav.reka.river.examples.dsltest.services.PersistDocument
+import no.nav.reka.river.interestedIn
 
 
 fun RapidsConnection.`testDsl`(): RapidsConnection {
+    val listenerImpl = DocumentRecievedListener(this)
+
+    topology(this) {
+        composition {
+            eventListener(EventName.DOCUMENT_RECIEVED) {
+                accepts {
+                    it.demandValue(Key.EVENT_NAME,event)
+                    it.interestedIn(DataFelt.RAW_DOCUMENT)
+                }
+                implementation = listenerImpl
+                løser(BehovName.FORMAT_DOCUMENT) {
+                    accepts {
+                        it.interestedIn(DataFelt.RAW_DOCUMENT)
+                        it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
+                    }
+                    implementation = FormatDokumentService(this@testDsl)
+                }
+                løser(BehovName.FORMAT_DOCUMENT_IBM) {
+                    accepts {
+                        it.interestedIn(DataFelt.RAW_DOCUMENT)
+                        it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
+                    }
+                    implementation = LegacyIBMFormatter(this@testDsl)
+                }
+
+
+            }
+        }
+    }.start()
+
+    /*
     val listenerImpl = DocumentRecievedListener(this)
     listener(this) {
         event = EventName.DOCUMENT_RECIEVED
@@ -27,16 +66,9 @@ fun RapidsConnection.`testDsl`(): RapidsConnection {
 
 
     }.start()
+    */
 
-    topology(this) {
-        composition {
-            eventListener {
-                event = EventName.DOCUMENT_RECIEVED
-                implementation = listenerImpl
-            }
 
-        }
-    }
 
     return this
 }

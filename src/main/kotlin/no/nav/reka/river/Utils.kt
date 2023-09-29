@@ -10,6 +10,9 @@ fun JsonMessage.demandValue(key: IKey, datafelt: IDataFelt) {
     this.demandValue(key.str,datafelt.toString())
 }
 
+fun JsonMessage.interestedIn(vararg keys: IDataFelt) {
+    this.interestedIn(*keys.map { it.str }.toTypedArray())
+}
 fun JsonMessage.interestedIn(vararg keys: IKey) {
     this.interestedIn(*keys.map { it.str }.toTypedArray())
 }
