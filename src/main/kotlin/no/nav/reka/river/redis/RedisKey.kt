@@ -1,12 +1,13 @@
 package no.nav.reka.river.redis
 
+import no.nav.reka.river.IDataFelt
 import no.nav.reka.river.MessageType
 
 sealed class RedisKey(open val uuid: String) {
     abstract override fun toString(): String
 
     companion object {
-        fun dataKey(uuid: String, dataFelt: MessageType.Data): RedisKey {
+        fun dataKey(uuid: String, dataFelt: IDataFelt): RedisKey {
             return DataKey(uuid, dataFelt)
         }
 
@@ -20,7 +21,7 @@ sealed class RedisKey(open val uuid: String) {
     }
 }
 
-private data class DataKey(override val uuid: String, val datafelt: MessageType.Data) : RedisKey(uuid) {
+private data class DataKey(override val uuid: String, val datafelt: IDataFelt) : RedisKey(uuid) {
     override fun toString(): String {
         return uuid + datafelt
     }

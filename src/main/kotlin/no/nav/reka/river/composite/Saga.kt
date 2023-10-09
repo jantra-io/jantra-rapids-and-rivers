@@ -1,8 +1,15 @@
 package no.nav.reka.river.composite
 
+import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
+import no.nav.reka.river.IDataFelt
+import no.nav.reka.river.IDataListener
+import no.nav.reka.river.IKey
+import no.nav.reka.river.InternalEvent
+import no.nav.reka.river.Key
 import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.configuration.dsl.TopologyBuilder
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
@@ -88,4 +95,54 @@ abstract class Saga(open val redisStore: IRedisStore) : MessageListener {
 
     open fun isDataCollected(uuid: String): Boolean = dataKanal.isAllDataCollected(RedisKey.clientKey(uuid))
     open fun isDataCollected(vararg keys: RedisKey): Boolean = dataKanal.isDataCollected(*keys)
+}
+
+
+
+fun saga(rapidsConnection: RapidsConnection,redisStore: IRedisStore,block: SagaBuilder.() -> Unit) = { }
+
+
+class SagaBuilder(val eventName: MessageType.Event, val implementation:MessageListener, val redisStore: IRedisStore, val rapidsConnection: RapidsConnection) {
+
+        fun event(eventName: MessageType.Event, block: SagaEventListener.() -> Unit) {
+                SagaEventListener(eventName).apply { block }
+        }
+
+
+/*
+        fun start() {
+            val eventListener = StatefullEventKanal(redisStore,eventName,dataFelter.map { it }.toTypedArray() ,implementation
+            , rapidsConnection )
+            val dataKanal = StatefullDataKanal(this.dataFelter.map { it }.toTypedArray(),eventName,implementation,rapidsConnection,redisStore)
+            val failListener = DelegatingFailKanal(eventName,implementation,rapidsConnection)
+            eventListener.start()
+            dataKanal.start()
+            failListener.start()
+        }
+
+ */
+    }
+
+
+class SagaEventListener(eventName: MessageType.Event) {
+    private lateinit var dataFelter: List<IKey>
+
+    fun capture(dataFelter: List<IDataFelt>) {
+        this.dataFelter = dataFelter
+    }
+
+    fun build() {
+      //  StatefullEventKanal
+    }
+
+}
+
+class SagaDataListener(eventName: MessageType.Event, dataFelter: List<IKey> = listOf()) {
+    private lateinit var dataFelter: List<IKey>
+
+    fun dataFelter(dataFelter: List<IDataFelt>) {
+        this.dataFelter = dataFelter
+
+    }
+
 }

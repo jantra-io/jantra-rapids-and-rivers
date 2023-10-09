@@ -3,14 +3,14 @@ package no.nav.reka.river.examples.composite_med_fail_listener.services
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.*
-import no.nav.reka.river.examples.basic_consumer.BehovName
-import no.nav.reka.river.examples.basic_consumer.DataFelt
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
+import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.bridge.CompositeListener
-import no.nav.reka.river.examples.basic_consumer.EventName
+import no.nav.reka.river.examples.example_1_basic_løser.EventName
 
 class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val rapid: Rapid = Rapid(rapidsConnection) ) : CompositeListener {
 

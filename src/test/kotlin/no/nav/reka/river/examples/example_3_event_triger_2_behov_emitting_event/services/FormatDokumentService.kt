@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.composite_med_fail_listener.services
+package no.nav.reka.river.examples.example_3_event_triger_2_behov_emitting_event.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -13,23 +13,21 @@ import no.nav.reka.river.interestedIn
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.publish
 
-class LegacyIBMFormatter(rapidsConnection: RapidsConnection): Løser(rapidsConnection) {
+class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
 
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
-        it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT_IBM)
+        it.demandValue(Key.BEHOV,BehovName.FORMAT_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
-        it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
+    }
+
+    private fun formatDocument(rawDocument:String) {
+        println("Document is now formated $rawDocument")
     }
 
     override fun onBehov(packet: Behov) {
-
-            packet.createBehov(
-                BehovName.PERSIST_DOCUMENT,
-                mapOf(DataFelt.FORMATED_DOCUMENT to "This is my IBM formated document")
-            ).also { rapidsConnection.publish(it) }
-
+        formatDocument(packet[DataFelt.RAW_DOCUMENT].asText())
+        rapidsConnection.publish(packet.createBehov(BehovName.PERSIST_DOCUMENT, mapOf(DataFelt.FORMATED_DOCUMENT to "This is my formated document")))
     }
 
 

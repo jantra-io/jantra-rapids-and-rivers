@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.composite_med_fail_listener.services
+package no.nav.reka.river.examples.example_5_capture_fail_from_listener.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -18,7 +18,6 @@ class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsC
 
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
         it.demandValue(Key.BEHOV,BehovName.FORMAT_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
@@ -40,9 +39,7 @@ class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsC
             )
         }
         else {
-            rapidsConnection.publish(
-             packet.createFail("Unable to process files with EBCDIC charset")
-            )
+            rapidsConnection.publish(packet.createFail("Unable to process files with EBCDIC charset"))
         }
     }
 

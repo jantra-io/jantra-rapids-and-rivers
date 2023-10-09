@@ -1,18 +1,16 @@
 package no.nav.reka.river.examples.dsltest
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.reka.river.IFailListener
 import no.nav.reka.river.Key
-import no.nav.reka.river.bridge.BehovRiver
-import no.nav.reka.river.examples.basic_consumer.EventName
-import no.nav.reka.river.configuration.dsl.listener
+import no.nav.reka.river.examples.example_1_basic_løser.EventName
 import no.nav.reka.river.configuration.dsl.topology
 import no.nav.reka.river.demandValue
-import no.nav.reka.river.examples.basic_consumer.BehovName
-import no.nav.reka.river.examples.basic_consumer.DataFelt
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
+import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.dsltest.services.DocumentRecievedListener
 import no.nav.reka.river.examples.dsltest.services.FormatDokumentService
 import no.nav.reka.river.examples.dsltest.services.LegacyIBMFormatter
-import no.nav.reka.river.examples.dsltest.services.PersistDocument
 import no.nav.reka.river.interestedIn
 
 
@@ -46,7 +44,15 @@ fun RapidsConnection.`testDsl`(): RapidsConnection {
             }
         }
     }.start()
-
+/*
+    saga(this,RedisStore("test")) {
+        event(EventName.DOCUMENT_RECIEVED) {
+            capture { DataFelt.RAW_DOCUMENT
+                                 DataFelt.FORMATED_DOCUMENT
+                                }
+        }
+    }
+*/
     /*
     val listenerImpl = DocumentRecievedListener(this)
     listener(this) {

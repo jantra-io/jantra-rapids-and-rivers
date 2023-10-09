@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.composite_med_fail_listener.services
+package no.nav.reka.river.examples.simple_saga.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -25,11 +25,9 @@ class LegacyIBMFormatter(rapidsConnection: RapidsConnection): Løser(rapidsConne
 
     override fun onBehov(packet: Behov) {
 
-            packet.createBehov(
-                BehovName.PERSIST_DOCUMENT,
-                mapOf(DataFelt.FORMATED_DOCUMENT to "This is my IBM formated document")
-            ).also { rapidsConnection.publish(it) }
-
+        packet.createData(mapOf(
+            DataFelt.FORMATED_DOCUMENT_IBM to "This is my IBM formatted document"
+        )).also { rapidsConnection.publish(it) }
     }
 
 

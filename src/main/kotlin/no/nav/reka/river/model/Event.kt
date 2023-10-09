@@ -3,11 +3,13 @@ package no.nav.reka.river.model
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.River
+import no.nav.helse.rapids_rivers.isMissingOrNull
 import no.nav.reka.river.IDataFelt
 import no.nav.reka.river.IKey
 import no.nav.reka.river.InternalEvent
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.Key
+import no.nav.reka.river.mapOfNotNull
 
 class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, val clientId: String?=null) : Message, TxMessage {
 
@@ -33,7 +35,7 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
         }
         fun create(jsonMessage: JsonMessage) : Event {
             val event = InternalEvent(jsonMessage[Key.EVENT_NAME.str()].asText())
-            val clientID = jsonMessage[Key.CLIENT_ID.str()]?.asText()
+            val clientID = jsonMessage[Key.CLIENT_ID.str()].takeUnless { it.isMissingOrNull() }?.asText()
             return Event(event, jsonMessage, clientID)
         }
     }
@@ -43,7 +45,7 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
-        return Behov(event, behov, JsonMessage.newMessage(event.value,mapOf(Key.BEHOV.str() to behov.value) + map.mapKeys { it.key.str }))
+        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid) + map.mapKeys { it.key.str }))
     }
 
     override fun uuid() = this.uuid?:""

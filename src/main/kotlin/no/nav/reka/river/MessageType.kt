@@ -24,6 +24,8 @@ internal class InternalEvent(override val value: String) : MessageType.Event {
     }
 
 }
+
+
 internal class InternalBehov(override val value: String) : MessageType.Behov {
     override fun toString(): String {
         return this.value
@@ -39,6 +41,8 @@ internal class InternalBehov(override val value: String) : MessageType.Behov {
     }
 
 }
+
+
 
 internal class InternalData(override val value: String) : MessageType.Data {
     override fun toString(): String {

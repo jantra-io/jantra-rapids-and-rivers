@@ -16,3 +16,8 @@ fun JsonMessage.interestedIn(vararg keys: IDataFelt) {
 fun JsonMessage.interestedIn(vararg keys: IKey) {
     this.interestedIn(*keys.map { it.str }.toTypedArray())
 }
+
+fun <K : Any, V : Any> mapOfNotNull(vararg pair: Pair<K, V?>): Map<K, V> = mapOf(*pair).mapNotNull { (key, value) ->
+    value?.let { key to it }
+}
+    .toMap()

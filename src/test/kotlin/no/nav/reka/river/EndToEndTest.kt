@@ -92,7 +92,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
         meldinger.add(jacksonObjectMapper().readTree(message))
     }
 
-    fun filter(event: MessageType.Event, behovType: MessageType.Behov? = null, datafelt: IDataFelt? = null): List<JsonNode> {
+    fun filter(event: MessageType.Event, behovType: MessageType.Behov? = null,datafelt: IDataFelt? = null): List<JsonNode> {
         return findMessage(meldinger, event, behovType, datafelt)
     }
 

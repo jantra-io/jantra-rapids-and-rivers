@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.composite_med_fail_listener
+package no.nav.reka.river.examples.example_5_capture_fail_from_listener
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.EndToEndTest

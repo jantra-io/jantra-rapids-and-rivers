@@ -9,6 +9,7 @@ import no.nav.reka.river.InternalBehov
 import no.nav.reka.river.InternalEvent
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.mapOfNotNull
 
 class Behov(private val event: MessageType.Event,
             private val behov: MessageType.Behov,
@@ -43,11 +44,11 @@ class Behov(private val event: MessageType.Event,
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createData(map: Map<IDataFelt, Any>): Data {
-        return Data(event, JsonMessage.newMessage(event.value, mapOf(Key.DATA.str() to "") + map.mapKeys { it.key.str }))
+        return Data(event, JsonMessage.newMessage(event.value, mapOfNotNull(Key.DATA.str() to "", Key.UUID.str() to uuid()) + map.mapKeys { it.key.str }))
     }
 
     fun createFail(feilmelding:String, data: Map<IKey,Any> = emptyMap()) : Fail {
-        return Fail.create(event, behov,feilmelding ,data.mapKeys { it.key as IKey })
+        return Fail.create(event, behov,feilmelding , mapOfNotNull(Key.UUID to uuid()) + data.mapKeys { it.key as IKey })
     }
 
     fun createBehov(behov: MessageType.Behov,data: Map<IKey, Any>) : Behov {

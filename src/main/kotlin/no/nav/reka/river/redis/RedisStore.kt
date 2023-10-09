@@ -12,17 +12,17 @@ class RedisStore(redisUrl: String) : IRedisStore {
     private val connection = redisClient.connect()
     private val syncCommands = connection.sync()
 
-    override fun set(key: String, value: String, ttl: Long) {
+    override fun set(key: String, value: String?, ttl: Long) {
         log.debug("Setting in redis: $key -> $value")
         syncCommands.set(key, value, SetArgs().ex(ttl))
     }
 
-    override fun set(key: RedisKey, value: String, ttl: Long) {
+    override fun set(key: RedisKey, value: String?, ttl: Long) {
         log.debug("Setting in redis: $key -> $value")
         syncCommands.set(key.toString(), value, SetArgs().ex(ttl))
     }
 
-    override fun set(key: RedisKey, value: JsonNode, ttl: Long) {
+    override fun set(key: RedisKey, value: JsonNode?, ttl: Long) {
         log.debug("Setting in redis: $key -> $value")
         syncCommands.set(key.toString(), value.toString(), SetArgs().ex(ttl))
     }

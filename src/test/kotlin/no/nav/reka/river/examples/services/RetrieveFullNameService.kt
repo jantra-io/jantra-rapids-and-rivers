@@ -6,9 +6,9 @@ import no.nav.reka.river.Key
 import no.nav.reka.river.basic.Løser
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.demandValue
-import no.nav.reka.river.examples.basic_consumer.BehovName
-import no.nav.reka.river.examples.basic_consumer.DataFelt
-import no.nav.reka.river.examples.basic_consumer.EventName
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
+import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
+import no.nav.reka.river.examples.example_1_basic_løser.EventName
 import no.nav.reka.river.publish
 
 class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {

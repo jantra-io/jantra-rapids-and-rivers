@@ -33,6 +33,10 @@ class Data(val event: MessageType.Event, private val jsonMessage: JsonMessage) :
 
     }
 
+    fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
+        return Behov(event, behov, JsonMessage.newMessage(event.value,mapOf(Key.BEHOV.str() to behov.value) + mapOfNotNull(Key.UUID.str() to uuid()) + map.mapKeys { it.key.str }))
+    }
+
     override operator fun get(key: IKey): JsonNode =  jsonMessage[key.str]
 
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
