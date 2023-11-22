@@ -1,8 +1,7 @@
-package no.nav.reka.river.examples.simple_saga
+package no.nav.reka.river.examples.example_6_simple_saga
 
 import com.fasterxml.jackson.module.kotlin.contains
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.rapids_rivers.isMissingOrNull
 import no.nav.reka.river.EndToEndTest
 import no.nav.reka.river.Key
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
@@ -12,7 +11,6 @@ import no.nav.reka.river.model.Event
 import no.nav.reka.river.redis.RedisStore
 import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 

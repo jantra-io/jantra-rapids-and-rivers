@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.simple_saga
+package no.nav.reka.river.examples.example_6_simple_saga
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
