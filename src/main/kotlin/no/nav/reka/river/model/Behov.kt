@@ -11,8 +11,8 @@ import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.mapOfNotNull
 
-class Behov(private val event: MessageType.Event,
-            private val behov: MessageType.Behov,
+class Behov(val event: MessageType.Event,
+            val behov: MessageType.Behov,
             private val jsonMessage: JsonMessage) : Message,TxMessage {
 
     init {

@@ -19,7 +19,7 @@ class TestDataConsumer : EndToEndTest() {
     @Test
     fun `Consumer reacting to data, agnostic of event and behov`() {
         publish(Event.create(EventName.DOCUMENT_RECIEVED, map = mapOf(DataFelt.RAW_DOCUMENT to "raw document")))
-        Thread.sleep(50000)
+        Thread.sleep(5000)
         with(filter(EventName.DOCUMENT_RECIEVED).first()) {
             Assertions.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(),"raw document")
         }

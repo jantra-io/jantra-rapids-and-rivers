@@ -71,7 +71,6 @@ class EventListenerBuilder(private val eventName: MessageType.Event,
                             ) {
     @DSLTopology
     lateinit var implementation: IEventListener
-    lateinit var event: MessageType.Event
     private lateinit var accept: River.PacketValidation
 
     @DSLTopology()
@@ -80,22 +79,22 @@ class EventListenerBuilder(private val eventName: MessageType.Event,
     }
     @DSLTopology
     fun løser(behov: MessageType.Behov, block: LøserBuilder.() -> Unit) {
-        løser.add(LøserBuilder(behov,event, rapid).apply { block }.build())
+        løser.add(LøserBuilder(behov,eventName, rapid).apply { block }.build())
     }
 
     @DSLTopology
     fun dataListener(block: DataListenerBuilder.() -> Unit) {
-        dataListensers.add(DataListenerBuilder(event, rapid).apply { block }.build())
+        dataListensers.add(DataListenerBuilder(eventName, rapid).apply { block }.build())
     }
 
     @DSLTopology
     fun failListener(block: FailListenerBuilder.()-> Unit) {
-        faillisteners.add(FailListenerBuilder(event,rapid).apply(block).build())
+        faillisteners.add(FailListenerBuilder(eventName,rapid).apply(block).build())
     }
 
     internal fun build() : EventRiver {
         val validation = if (::accept.isInitialized) accept else implementation.accept() + River.PacketValidation{it.demandValue(
-            Key.EVENT_NAME,event)}
+            Key.EVENT_NAME,eventName)}
         return EventRiver(rapid,implementation, validation)
     }
 
@@ -124,6 +123,7 @@ class FailListenerBuilder(private val event: MessageType.Event, private val rapi
 @DSLTopology
  class LøserBuilder(private val behov: MessageType.Behov,private val event: MessageType.Event, private val rapid: RapidsConnection) {
 
+     @DSLTopology
     lateinit var implementation: IBehovListener
     private lateinit var accept: River.PacketValidation
 

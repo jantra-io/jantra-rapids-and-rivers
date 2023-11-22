@@ -13,9 +13,9 @@ import no.nav.reka.river.publish
 
 class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
 
-    override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
+    override val event: MessageType.Event = EventName.APPLICATION_INITIATED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, EventName.APPLICATION_INITIATED)
+        it.demandValue(Key.EVENT_NAME, event)
         it.demandValue(Key.BEHOV, BehovName.FULL_NAME)
     }
 

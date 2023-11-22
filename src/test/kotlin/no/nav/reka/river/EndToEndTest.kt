@@ -1,13 +1,18 @@
 package no.nav.reka.river
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.contains
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.prometheus.client.CollectorRegistry
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.helse.rapids_rivers.isMissingOrNull
 import no.nav.helsearbeidsgiver.inntektsmelding.integrasjonstest.filter.findMessage
 import no.nav.reka.river.examples.buildApp
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
+import no.nav.reka.river.examples.example_1_basic_løser.EventName
+import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Message
 import no.nav.reka.river.redis.RedisStore
 import org.junit.jupiter.api.AfterAll
@@ -43,10 +48,8 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
 
 
     val meldinger = mutableListOf<JsonNode>()
-    val results = mutableListOf<String>()
+    val messages: Messages = Messages()
 
-
-    var filterMessages: (JsonNode) -> Boolean = { true }
 
     @BeforeAll
     fun beforeAllEndToEnd() {
@@ -81,15 +84,13 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
 
     fun resetMessages() {
         meldinger.clear()
-        results.clear()
     }
 
     override fun onMessage(message: String, context: MessageContext) {
         logger.info("onMessage: $message")
-        if (filterMessages.invoke(jacksonObjectMapper().readTree(message))) {
-            results.add(message)
-        }
+
         meldinger.add(jacksonObjectMapper().readTree(message))
+        messages.add(jacksonObjectMapper().readTree(message))
     }
 
     fun filter(event: MessageType.Event, behovType: MessageType.Behov? = null,datafelt: IDataFelt? = null): List<JsonNode> {
@@ -114,15 +115,54 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
         rapid.publish(value.toJsonMessage().toJson())
     }
 
-    fun getMessages(t: (JsonNode) -> Boolean): List<JsonNode> {
-        return results.map { jacksonObjectMapper().readTree(it) }.filter(t).toList()
-    }
 
-    fun getMessage(index: Int): JsonNode {
-        return jacksonObjectMapper().readTree(results[index + 1])
-    }
 
     fun getMessageCount(): Int {
-        return results.size - 1
+        return messages.unwrap().size
     }
+}
+
+
+class Messages(private val messages: MutableList<JsonNode> = mutableListOf()) {
+
+    private val anyEvent: (JsonNode) -> Boolean = {it.contains(Key.EVENT_NAME.str())}
+
+    fun add(message:JsonNode) {
+        messages.add(message)
+    }
+
+    fun clear() = messages.clear()
+
+    fun withEventName(event: EventName) : Messages {
+        return Messages(messages.filter { it[Key.EVENT_NAME.str()].asText() == event.value }.toMutableList())
+    }
+
+    fun withBehovName(behov: BehovName) : Messages {
+        return Messages(messages.filter {  it[Key.BEHOV.str()]!=null && !it[Key.BEHOV.str()].isMissingOrNull() }.filter { it[Key.BEHOV.str()].asText() == behov.value }.toMutableList())
+    }
+
+    fun withAnyEvent() : Messages {
+        return Messages(messages.filter { it.contains(Key.EVENT_NAME.str()) }.toMutableList())
+    }
+
+    fun withData(datafelter: List<IDataFelt>) : Messages {
+        return Messages(messages.filter(anyEvent).filter {jsonNode ->
+            datafelter.count { datafelt ->
+                jsonNode.contains(datafelt.str)
+        } == datafelter.size }.toMutableList())
+    }
+
+    fun single() : JsonNode {
+        return when (messages.size) {
+            0 -> throw NoSuchElementException("List is empty.")
+            1 -> messages.first()
+            else -> throw IllegalArgumentException("List has more than one element.")
+        }
+    }
+
+    fun allDataMessages(): Messages {
+        return Messages(messages.filter { it.contains(Key.DATA.str()) }.toMutableList())
+    }
+
+    fun unwrap():List<JsonNode> = messages.map { it }.toList()
 }

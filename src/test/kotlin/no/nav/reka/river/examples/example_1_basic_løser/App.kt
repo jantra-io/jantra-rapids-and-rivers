@@ -8,6 +8,6 @@ import no.nav.reka.river.redis.RedisStore
 
 
 fun RapidsConnection.buildBasicConsumerApp(redisStore: RedisStore): RapidsConnection {
-    RetrieveFullNameService(this)
+    RetrieveFullNameService(this).start()
     return this
 }

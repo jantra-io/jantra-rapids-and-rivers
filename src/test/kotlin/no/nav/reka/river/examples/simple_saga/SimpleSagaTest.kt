@@ -30,6 +30,14 @@ class SimpleSagaTest : EndToEndTest(){
 
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(DataFelt.RAW_DOCUMENT to RAW_DOCUMNET)))
         Thread.sleep(5000)
+
+        this.messages
+            .withEventName(EventName.DOCUMENT_RECIEVED)
+            .withBehovName(BehovName.FORMAT_DOCUMENT)
+            .withData(listOf(DataFelt.RAW_DOCUMENT))
+            .single().also {
+                Assert.assertEquals(it[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
+            }
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_DOCUMENT).first()) {
             Assert.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
         }

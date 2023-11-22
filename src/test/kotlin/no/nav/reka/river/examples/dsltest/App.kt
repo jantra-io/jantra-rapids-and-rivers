@@ -21,7 +21,6 @@ fun RapidsConnection.`testDsl`(): RapidsConnection {
         composition {
             eventListener(EventName.DOCUMENT_RECIEVED) {
                 accepts {
-                    it.demandValue(Key.EVENT_NAME,event)
                     it.interestedIn(DataFelt.RAW_DOCUMENT)
                 }
                 implementation = listenerImpl
@@ -44,6 +43,10 @@ fun RapidsConnection.`testDsl`(): RapidsConnection {
             }
         }
     }.start()
+
+    fun RapidsConnection.`empty`(): RapidsConnection {
+        return this
+    }
 /*
     saga(this,RedisStore("test")) {
         event(EventName.DOCUMENT_RECIEVED) {
