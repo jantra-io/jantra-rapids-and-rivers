@@ -75,16 +75,18 @@ class EventListenerBuilder(private val eventName: MessageType.Event,
 
     @DSLTopology()
     fun accepts(jsonMessage: (JsonMessage) -> Unit)  {
-        accept = River.PacketValidation {  }.apply { jsonMessage }
+        accept = River.PacketValidation {
+            jsonMessage.invoke(it)
+        }
     }
     @DSLTopology
     fun løser(behov: MessageType.Behov, block: LøserBuilder.() -> Unit) {
-        løser.add(LøserBuilder(behov,eventName, rapid).apply { block }.build())
+        løser.add(LøserBuilder(behov,eventName, rapid).apply (block ).build())
     }
 
     @DSLTopology
     fun dataListener(block: DataListenerBuilder.() -> Unit) {
-        dataListensers.add(DataListenerBuilder(eventName, rapid).apply { block }.build())
+        dataListensers.add(DataListenerBuilder(eventName, rapid).apply ( block ).build())
     }
 
     @DSLTopology
@@ -130,7 +132,9 @@ class FailListenerBuilder(private val event: MessageType.Event, private val rapi
 
     @DSLTopology
     fun accepts(jsonMessage: (JsonMessage) -> Unit)  {
-        accept = River.PacketValidation {  }.apply { jsonMessage }
+        accept = River.PacketValidation {
+            jsonMessage.invoke(it)
+        }
     }
 
     internal fun build() : BehovRiver {

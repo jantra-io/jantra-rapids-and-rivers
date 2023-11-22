@@ -17,6 +17,6 @@ class DSLTest : EndToEndTest() {
     }
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() = { rapid: RapidsConnection, redisStore: RedisStore ->    rapid
+        get() = { rapid: RapidsConnection, redisStore: RedisStore ->    rapid.testDsl()
         }
 }
