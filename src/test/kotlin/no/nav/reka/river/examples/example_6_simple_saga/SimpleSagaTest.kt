@@ -22,6 +22,7 @@ class SimpleSagaTest : EndToEndTest(){
     @BeforeEach
     fun clean() {
         this.meldinger.clear()
+        this.messages.clear()
     }
     @Test
     fun `2 step saga example`() {
@@ -75,7 +76,7 @@ class SimpleSagaTest : EndToEndTest(){
 
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaScenario(redisStore)}
+        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaViaDSL(redisStore)}
 
 
 }

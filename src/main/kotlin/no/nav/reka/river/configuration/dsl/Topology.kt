@@ -19,17 +19,25 @@ import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.demandValue
 import no.nav.reka.river.interestedIn
 import no.nav.reka.river.plus
+import no.nav.reka.river.redis.RedisStore
 
 @DSLTopology
 class TopologyBuilder(private val rapid: RapidsConnection) {
 
     private lateinit var compositionBuilder : CompositionBuilder
+    private lateinit var  sagaBuilder: SagaBuilder
     @DSLTopology
     fun composition(name: String = "",block: CompositionBuilder.() -> Unit) {
         compositionBuilder = CompositionBuilder(rapid).apply(block)
     }
+
+    @DSLTopology
+    fun saga(name: String = "",redisStore: RedisStore, block: SagaBuilder.() -> Unit) {
+        sagaBuilder = SagaBuilder(rapid,redisStore).apply(block)
+    }
     fun start() {
-        compositionBuilder.start()
+        if (::compositionBuilder.isInitialized) compositionBuilder.start()
+        if (::sagaBuilder.isInitialized) sagaBuilder.start()
     }
 }
 

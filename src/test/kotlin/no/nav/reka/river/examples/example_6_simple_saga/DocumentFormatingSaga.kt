@@ -3,6 +3,7 @@ package no.nav.reka.river.examples.example_6_simple_saga
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.Rapid
 import no.nav.reka.river.composite.Saga
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
@@ -15,7 +16,7 @@ import no.nav.reka.river.publish
 import no.nav.reka.river.redis.RedisKey
 import no.nav.reka.river.redis.RedisStore
 
-class DocumentFormatingSaga(override val event: MessageType.Event, redisStore: RedisStore, val rapid: RapidsConnection) : Saga(redisStore) {
+class DocumentFormatingSaga(val event: MessageType.Event, redisStore: RedisStore, rapid: RapidsConnection) : Saga(event,redisStore, rapid) {
 
 
 
@@ -54,7 +55,7 @@ class DocumentFormatingSaga(override val event: MessageType.Event, redisStore: R
     }
 
     override fun terminate(message: TxMessage) {
-        TODO("Not yet implemented")
+        
     }
 
     private fun step1data(uuid: String): Array<RedisKey> = arrayOf(

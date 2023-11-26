@@ -1,14 +1,20 @@
 package no.nav.reka.river.examples.example_6_simple_saga
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.reka.river.Key
 import no.nav.reka.river.composite.DelegatingFailKanal
+import no.nav.reka.river.composite.SagaRunner
 import no.nav.reka.river.composite.StatefullDataKanal
 import no.nav.reka.river.composite.StatefullEventKanal
+import no.nav.reka.river.configuration.dsl.topology
+import no.nav.reka.river.demandValue
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
 import no.nav.reka.river.examples.example_6_simple_saga.services.FormatDokumentService
 import no.nav.reka.river.examples.example_6_simple_saga.services.LegacyIBMFormatter
 import no.nav.reka.river.examples.example_6_simple_saga.services.PersistDocument
+import no.nav.reka.river.interestedIn
 
 import no.nav.reka.river.redis.RedisStore
 
@@ -16,16 +22,75 @@ import no.nav.reka.river.redis.RedisStore
 
 fun RapidsConnection.buildSagaScenario(redisStore: RedisStore): RapidsConnection {
     val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this)
-
-    StatefullEventKanal(redisStore, EventName.DOCUMENT_RECIEVED, arrayOf(DataFelt.RAW_DOCUMENT), formattingService, this).start()
-    val datakanal = StatefullDataKanal(arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),EventName.DOCUMENT_RECIEVED,formattingService,this,redisStore)
-    DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,formattingService,this).start()
-
-    formattingService.withDataKanal { datakanal }
+    val sagaRunner = SagaRunner(redisStore,formattingService)
+    val datakanal = StatefullDataKanal(arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),EventName.DOCUMENT_RECIEVED,sagaRunner,this,redisStore)
+    sagaRunner.dataKanal = datakanal
     datakanal.start()
+    StatefullEventKanal(redisStore, EventName.DOCUMENT_RECIEVED, arrayOf(DataFelt.RAW_DOCUMENT), sagaRunner, this).start()
+    DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this).start()
+
 
     FormatDokumentService(this).start()
     LegacyIBMFormatter(this).start()
     PersistDocument(this).start()
     return this
+}
+
+fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
+
+    topology(this) {
+        saga("My saga",redisStore) {
+            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this@buildSagaViaDSL))
+            eventListener(EventName.DOCUMENT_RECIEVED) {
+                this.capture(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE)
+            }
+            dataListener(
+                        DataFelt.FORMATED_DOCUMENT,
+                        DataFelt.FORMATED_DOCUMENT_IBM,
+                        DataFelt.DOCUMENT_REFERECE
+            )
+            løser(BehovName.FORMAT_DOCUMENT) {
+                implementation = FormatDokumentService(this@buildSagaViaDSL)
+                accepts {
+                     it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
+                     it.demandValue(Key.BEHOV,BehovName.FORMAT_DOCUMENT)
+                     it.interestedIn(DataFelt.RAW_DOCUMENT)
+                }
+            }
+            løser(BehovName.FORMAT_DOCUMENT_IBM) {
+                implementation = LegacyIBMFormatter(this@buildSagaViaDSL)
+                accepts {
+                      it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
+                      it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT_IBM)
+                      it.interestedIn(DataFelt.RAW_DOCUMENT)
+                      it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
+                }
+            }
+            løser(BehovName.PERSIST_DOCUMENT) {
+                implementation = PersistDocument(this@buildSagaViaDSL)
+                accepts {
+                    it.demandValue(Key.BEHOV,BehovName.PERSIST_DOCUMENT)
+                    it.interestedIn(DataFelt.FORMATED_DOCUMENT)
+                    it.interestedIn(DataFelt.FORMATED_DOCUMENT_IBM)
+                }
+            }
+        }
+    }.start()
+    return this
+/*
+    val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this)
+    val sagaRunner = SagaRunner(redisStore,formattingService)
+    val datakanal = StatefullDataKanal(arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),EventName.DOCUMENT_RECIEVED,sagaRunner,this,redisStore)
+    sagaRunner.dataKanal = datakanal
+    datakanal.start()
+    StatefullEventKanal(redisStore, EventName.DOCUMENT_RECIEVED, arrayOf(DataFelt.RAW_DOCUMENT), sagaRunner, this).start()
+    DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this).start()
+
+
+    FormatDokumentService(this).start()
+    LegacyIBMFormatter(this).start()
+    PersistDocument(this).start()
+    return this
+
+ */
 }

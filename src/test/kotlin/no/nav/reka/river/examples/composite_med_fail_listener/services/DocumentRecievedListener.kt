@@ -32,7 +32,6 @@ class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val 
     }
 
     override fun onFail(fail: Fail) {
-
         this.rapid.publishBehov(Behov.create(fail.event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
     }
 

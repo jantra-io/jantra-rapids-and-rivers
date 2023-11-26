@@ -65,7 +65,5 @@ class StatefullDataKanal(
     fun isAllDataCollected(key: RedisKey): Boolean {
         return redisStore.exist(*dataFelter.map { key.toString() + it }.toTypedArray()) == dataFelter.size.toLong()
     }
-    fun isDataCollected(vararg keys: RedisKey): Boolean {
-        return redisStore.exist(*keys) == keys.size.toLong()
-    }
+
 }

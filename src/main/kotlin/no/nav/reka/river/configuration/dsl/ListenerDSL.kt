@@ -1,5 +1,6 @@
 package no.nav.reka.river.configuration.dsl
 
+import jdk.jfr.Experimental
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -16,7 +17,7 @@ import no.nav.reka.river.demandValue
 import no.nav.reka.river.plus
 
 
-
+@Experimental
 class ListenerDSLBuilder(private val rapid:RapidsConnection) {
     @DSLListener
     lateinit var event: MessageType.Event
@@ -43,6 +44,7 @@ class ListenerDSLBuilder(private val rapid:RapidsConnection) {
     }
 }
 
+@Experimental
 class EventListenerDSLBuilder(private val event: MessageType.Event, private val rapid: RapidsConnection) {
     @DSLListener
     lateinit var implementation: IEventListener
@@ -60,6 +62,7 @@ class EventListenerDSLBuilder(private val event: MessageType.Event, private val 
 
 }
 
+@Experimental
 class FailListenerDSLBuilder(private val event: MessageType.Event, private val rapid: RapidsConnection) {
     private lateinit var accept: River.PacketValidation
     @DSLListener
@@ -80,6 +83,7 @@ class FailListenerDSLBuilder(private val event: MessageType.Event, private val r
 
 }
 
+@Experimental
 class DataListenerDSLBuilder(private val event: MessageType.Event, private val rapid: RapidsConnection) {
     private lateinit var accept: River.PacketValidation
     @DSLListener
@@ -100,6 +104,7 @@ class DataListenerDSLBuilder(private val event: MessageType.Event, private val r
 
 }
 
+@Experimental
 @DslMarker
 annotation class DSLListener
 

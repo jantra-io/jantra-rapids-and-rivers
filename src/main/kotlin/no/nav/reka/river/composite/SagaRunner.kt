@@ -3,13 +3,10 @@ package no.nav.reka.river.composite
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
 import no.nav.reka.river.IDataFelt
-import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IKey
-import no.nav.reka.river.InternalEvent
-import no.nav.reka.river.Key
 import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.configuration.dsl.TopologyBuilder
+import no.nav.reka.river.Rapid
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
@@ -18,10 +15,27 @@ import no.nav.reka.river.redis.IRedisStore
 import no.nav.reka.river.redis.RedisKey
 import org.slf4j.LoggerFactory
 
-abstract class Saga(open val redisStore: IRedisStore) : MessageListener {
+
+abstract class  Saga(val eventName: MessageType.Event, val redisStore: IRedisStore,val rapid: RapidsConnection) {
+
+    open fun onError(feil: Fail): Transaction {
+        return Transaction.TERMINATE
+    }
+    abstract fun dispatchBehov(message: TxMessage, transaction: Transaction)
+    abstract fun finalize(message: TxMessage)
+    abstract fun terminate(message: TxMessage)
+
+    fun isDataCollected(vararg keys: RedisKey): Boolean {
+        return redisStore.exist(*keys) == keys.size.toLong()
+    }
+
+}
+
+
+
+class SagaRunner(val redisStore: IRedisStore, val implementation: Saga ) : MessageListener {
     private val log = LoggerFactory.getLogger(this::class.java)
-    abstract val event: MessageType.Event
-    private lateinit var dataKanal: StatefullDataKanal
+    lateinit var dataKanal: StatefullDataKanal
 
     override fun onMessage(packet: Message) {
         val txMessage = packet as TxMessage
@@ -30,11 +44,11 @@ abstract class Saga(open val redisStore: IRedisStore) : MessageListener {
         when (transaction) {
             Transaction.NEW -> {
                 initialTransactionState(txMessage)
-                dispatchBehov(txMessage, transaction)
+                implementation.dispatchBehov(txMessage, transaction)
             }
-            Transaction.IN_PROGRESS -> dispatchBehov(txMessage, transaction)
-            Transaction.FINALIZE -> finalize(txMessage)
-            Transaction.TERMINATE -> terminate(txMessage)
+            Transaction.IN_PROGRESS -> implementation.dispatchBehov(txMessage, transaction)
+            Transaction.FINALIZE -> implementation.finalize(txMessage)
+            Transaction.TERMINATE -> implementation.terminate(txMessage)
             Transaction.NOT_ACTIVE -> notActive(txMessage)
         }
     }
@@ -49,10 +63,10 @@ abstract class Saga(open val redisStore: IRedisStore) : MessageListener {
         val transactionId = message.uuid()!!
         if (message is Fail) { // Returnerer INPROGRESS eller TERMINATE
             log.error("Feilmelding er ${message.toString()}")
-            return onError(message as Fail)
+            return implementation.onError(message as Fail)
         }
 
-        val eventKey = RedisKey.transactionKey(transactionId, event)
+        val eventKey = RedisKey.transactionKey(transactionId, implementation.eventName)
         val value = redisStore.get(eventKey)
         if (value.isNullOrEmpty()) {
             if (!(message is Event)) {
@@ -68,41 +82,26 @@ abstract class Saga(open val redisStore: IRedisStore) : MessageListener {
         return Transaction.IN_PROGRESS
     }
 
-
-    abstract fun dispatchBehov(message: TxMessage, transaction: Transaction)
-    abstract fun finalize(message: TxMessage)
-    abstract fun terminate(message: TxMessage)
     open fun initialTransactionState(message: TxMessage) {}
 
-    open fun onError(feil: Fail): Transaction {
-        return Transaction.TERMINATE
-    }
 
-    fun withFailKanal(failKanalSupplier: (t: Saga) -> FailKanal): Saga {
-        failKanalSupplier.invoke(this)
-        return this
-    }
 
-    fun withEventListener(eventListenerSupplier: (t: Saga) -> EventListener): Saga {
-        eventListenerSupplier.invoke(this)
-        return this
-    }
-
-    fun withDataKanal(dataKanalSupplier: (t: Saga) -> StatefullDataKanal): Saga {
+    fun withDataKanal(dataKanalSupplier: (t: SagaRunner) -> StatefullDataKanal): SagaRunner {
         dataKanal = dataKanalSupplier.invoke(this)
         return this
     }
 
     open fun isDataCollected(uuid: String): Boolean = dataKanal.isAllDataCollected(RedisKey.clientKey(uuid))
-    open fun isDataCollected(vararg keys: RedisKey): Boolean = dataKanal.isDataCollected(*keys)
+
 }
 
 
 
-fun saga(rapidsConnection: RapidsConnection,redisStore: IRedisStore,block: SagaBuilder.() -> Unit) = { }
 
-
-class SagaBuilder(val eventName: MessageType.Event, val implementation:MessageListener, val redisStore: IRedisStore, val rapidsConnection: RapidsConnection) {
+class SagaBuilder(val eventName: MessageType.Event,
+                  val implementation:MessageListener,
+                  private val redisStore: IRedisStore,
+                  val rapidsConnection: RapidsConnection) {
 
         fun event(eventName: MessageType.Event, block: SagaEventListener.() -> Unit) {
                 SagaEventListener(eventName).apply { block }
