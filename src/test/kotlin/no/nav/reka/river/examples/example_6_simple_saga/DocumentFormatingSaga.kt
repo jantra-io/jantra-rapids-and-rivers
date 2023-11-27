@@ -16,7 +16,7 @@ import no.nav.reka.river.publish
 import no.nav.reka.river.redis.RedisKey
 import no.nav.reka.river.redis.RedisStore
 
-class DocumentFormatingSaga(val event: MessageType.Event, redisStore: RedisStore, rapid: RapidsConnection) : Saga(event,redisStore, rapid) {
+class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
 
 
 

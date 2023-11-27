@@ -25,10 +25,8 @@ import no.nav.reka.river.redis.RedisStore
 
 
 fun RapidsConnection.buildSagaScenario(redisStore: RedisStore): RapidsConnection {
-    val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this)
-    val sagaRunner = SagaRunner(redisStore,
-                                formattingService
-                                )
+    val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED)
+    val sagaRunner = SagaRunner(redisStore,this, formattingService )
     val dataListener =  StatefullDataKanal(EventName.DOCUMENT_RECIEVED,
                                         arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),
                                         sagaRunner,
@@ -52,9 +50,7 @@ fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
 
     topology(this) {
         saga("My saga",redisStore) {
-            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED,
-                           redisStore,
-                      this@buildSagaViaDSL))
+            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED))
             eventListener(EventName.DOCUMENT_RECIEVED) {
                 this.capture(DataFelt.RAW_DOCUMENT)
             }

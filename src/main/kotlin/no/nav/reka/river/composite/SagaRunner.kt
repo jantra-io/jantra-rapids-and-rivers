@@ -14,11 +14,14 @@ import no.nav.reka.river.model.Message
 import no.nav.reka.river.model.TxMessage
 import no.nav.reka.river.redis.IRedisStore
 import no.nav.reka.river.redis.RedisKey
+import no.nav.reka.river.redis.RedisStore
 import org.slf4j.LoggerFactory
 
 
-abstract class  Saga(val eventName: MessageType.Event, val redisStore: IRedisStore,val rapid: RapidsConnection)  {
+abstract class  Saga(val eventName: MessageType.Event)  {
+    protected lateinit var redisStore: IRedisStore
 
+    protected lateinit var rapid: RapidsConnection
     open fun onError(feil: Fail): Transaction {
         return Transaction.TERMINATE
     }
@@ -30,13 +33,26 @@ abstract class  Saga(val eventName: MessageType.Event, val redisStore: IRedisSto
         return redisStore.exist(*keys) == keys.size.toLong()
     }
 
+    internal fun setRedis(redisStore: IRedisStore) {
+        this.redisStore = redisStore
+    }
+
+    internal fun setRapid(rapid: RapidsConnection) {
+        this.rapid = rapid
+    }
+
 }
 
 
 
-class SagaRunner(val redisStore: IRedisStore, val implementation: Saga ) : MessageListener {
+class SagaRunner(val redisStore: IRedisStore,val rapidsConnection: RapidsConnection, val implementation: Saga ) : MessageListener {
     private val log = LoggerFactory.getLogger(this::class.java)
     lateinit var dataKanal: StatefullDataKanal
+
+    init {
+        implementation.setRedis(redisStore)
+        implementation.setRapid(rapidsConnection)
+    }
 
     override fun onMessage(packet: Message) {
         val txMessage = packet as TxMessage

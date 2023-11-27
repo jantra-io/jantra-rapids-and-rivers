@@ -36,7 +36,7 @@ class SagaBuilder(private val rapid: RapidsConnection,
     lateinit var dataListener: StatefullDataKanal
 
     fun implementation(implementation: Saga) {
-        sagaRunner = SagaRunner(redisStore, implementation )
+        sagaRunner = SagaRunner(redisStore,rapid,implementation )
     }
 
     @DSLTopology
