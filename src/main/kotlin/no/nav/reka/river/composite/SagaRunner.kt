@@ -7,6 +7,7 @@ import no.nav.reka.river.IKey
 import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.Rapid
+import no.nav.reka.river.basic.FailListener
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
@@ -16,7 +17,7 @@ import no.nav.reka.river.redis.RedisKey
 import org.slf4j.LoggerFactory
 
 
-abstract class  Saga(val eventName: MessageType.Event, val redisStore: IRedisStore,val rapid: RapidsConnection) {
+abstract class  Saga(val eventName: MessageType.Event, val redisStore: IRedisStore,val rapid: RapidsConnection)  {
 
     open fun onError(feil: Fail): Transaction {
         return Transaction.TERMINATE

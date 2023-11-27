@@ -12,6 +12,7 @@ import no.nav.reka.river.bridge.BehovRiver
 import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
+import no.nav.reka.river.composite.DelegatingFailKanal
 import no.nav.reka.river.composite.MessageListener
 import no.nav.reka.river.composite.Saga
 import no.nav.reka.river.composite.SagaEventListener
@@ -26,7 +27,9 @@ import no.nav.reka.river.redis.RedisStore
 class SagaBuilder(private val rapid: RapidsConnection,
                   private val redisStore: RedisStore,
                   val capture: MutableList<IKey> = mutableListOf(),
-                  val løser: MutableList<BehovRiver> = mutableListOf()) {
+                  val løser: MutableList<BehovRiver> = mutableListOf(),
+                  val failListeners: MutableList<FailRiver> = mutableListOf()
+) {
     lateinit var eventName: MessageType.Event
     private lateinit var sagaRunner: SagaRunner
     private lateinit var eventListener: StatefullEventKanal
@@ -45,18 +48,31 @@ class SagaBuilder(private val rapid: RapidsConnection,
         eventListener = SagaEventListenerBuilder(eventName,redisStore,rapid,sagaRunner).apply(block).build()
     }
 
+    @DSLTopology
     fun dataListener(vararg datafelter: IKey) {
-        dataListener = SagaDataListenerBuilder(eventListener.event,redisStore,rapid,sagaRunner).capture(*datafelter).start()
+        dataListener = SagaDataListenerBuilder(eventListener.eventName,redisStore,rapid,sagaRunner).capture(*datafelter).start()
     }
+    @DSLTopology
     fun løser(behov: MessageType.Behov, block: LøserBuilder.() -> Unit) {
-        løser.add(LøserBuilder(behov,eventListener.event, rapid).apply (block ).build())
+        løser.add(LøserBuilder(behov,eventListener.eventName, rapid).apply (block ).build())
+    }
+
+    fun failListener(block:FailListenerBuilder.() -> Unit) {
+        val builder = FailListenerBuilder(eventListener.eventName,rapid)
+        builder.implementation =  DelegatingFailKanal(eventListener.eventName,sagaRunner,rapid)
+        failListeners.add(builder.build())
     }
 
     fun start() {
 
-        eventListener.start()
-        dataListener.start()
+        sagaRunner.dataKanal = dataListener
+        EventRiver(rapid,eventListener,eventListener.accept()).start()
+        DataRiver(rapid,dataListener,dataListener.accept()).start()
+
         løser.forEach{
+            it.start()
+        }
+        failListeners.forEach {
             it.start()
         }
     }
@@ -75,7 +91,7 @@ class SagaDataListenerBuilder( private val eventName: MessageType.Event,
     }
 
     fun start() : StatefullDataKanal {
-        return StatefullDataKanal(datafelter,eventName,messageListener,rapid,redisStore)
+        return StatefullDataKanal(eventName,datafelter,messageListener,redisStore,rapid)
     }
 
 }
@@ -112,7 +128,7 @@ class SagaEventListenerBuilder(private val eventName: MessageType.Event,
 
     internal fun build() : StatefullEventKanal {
 
-        return StatefullEventKanal(redisStore,eventName,capture,sagaRunner,rapid)
+        return StatefullEventKanal(eventName,redisStore,capture,sagaRunner)
     }
 
 }

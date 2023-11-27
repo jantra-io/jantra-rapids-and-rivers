@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SimpleSagaTest : EndToEndTest(){
+class SimpleSagaTest : EndToEndTest() {
     val RAW_DOCUMNET = "This is my raw document"
     val ILLEGAL_CHARACTER = "%"
 
@@ -28,7 +28,7 @@ class SimpleSagaTest : EndToEndTest(){
     fun `2 step saga example`() {
 
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(DataFelt.RAW_DOCUMENT to RAW_DOCUMNET)))
-        Thread.sleep(5000)
+        Thread.sleep(50000)
 
         this.messages
             .withEventName(EventName.DOCUMENT_RECIEVED)

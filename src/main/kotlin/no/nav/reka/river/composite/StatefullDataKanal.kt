@@ -11,13 +11,12 @@ import no.nav.reka.river.redis.RedisKey
 import org.slf4j.LoggerFactory
 
 class StatefullDataKanal(
+    eventName: MessageType.Event,
     private val dataFelter: Array<IKey>,
-    override val eventName: MessageType.Event,
     private val mainListener: MessageListener,
-    rapidsConnection: RapidsConnection,
-    val redisStore: IRedisStore
-) : DataKanal(
-    rapidsConnection
+    val redisStore: IRedisStore,
+    val rapidsConnection: RapidsConnection
+) : DataKanal(eventName
 ) {
     private val log = LoggerFactory.getLogger(this::class.java)
 

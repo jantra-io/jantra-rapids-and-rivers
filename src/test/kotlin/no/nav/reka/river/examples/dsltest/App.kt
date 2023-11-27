@@ -1,5 +1,6 @@
 package no.nav.reka.river.examples.dsltest
 
+import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.IFailListener
 import no.nav.reka.river.Key
@@ -11,11 +12,13 @@ import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.dsltest.services.DocumentRecievedListener
 import no.nav.reka.river.examples.dsltest.services.FormatDokumentService
 import no.nav.reka.river.examples.dsltest.services.LegacyIBMFormatter
+import no.nav.reka.river.examples.dsltest.services.PersistDocument
 import no.nav.reka.river.interestedIn
 
 
 fun RapidsConnection.`testDsl`(): RapidsConnection {
     val listenerImpl = DocumentRecievedListener(this)
+
 
     topology(this) {
         composition {
@@ -38,9 +41,17 @@ fun RapidsConnection.`testDsl`(): RapidsConnection {
                     }
                     implementation = LegacyIBMFormatter(this@testDsl)
                 }
+                løser(BehovName.PERSIST_DOCUMENT) {
+                     accepts {
+                        it.interestedIn(DataFelt.FORMATED_DOCUMENT)
+                         it.interestedIn(DataFelt.FORMATED_DOCUMENT_IBM)
+                    }
+                    implementation = PersistDocument(this@testDsl)
+                }
 
 
             }
+
         }
     }.start()
 

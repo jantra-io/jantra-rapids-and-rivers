@@ -11,14 +11,12 @@ import org.slf4j.LoggerFactory
 import java.util.UUID
 
 class StatefullEventKanal(
+    val eventName: MessageType.Event,
     val redisStore: IRedisStore,
-    override val event: MessageType.Event,
     private val dataFelter: Array<IDataFelt>,
     override val mainListener: MessageListener,
-    rapidsConnection: RapidsConnection
 ) : DelegatingEventListener(
-    mainListener,
-    rapidsConnection
+    mainListener
 ) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -41,7 +39,7 @@ class StatefullEventKanal(
         }
     }
     override fun onEvent(packet: Event) {
-        log.info("Statefull event listener for event ${event.value}" + " med paket  ${packet.toString()}")
+        log.info("Statefull event listener for event ${packet.event.value}" + " med paket  ${packet.toString()}")
         collectData(packet)
         mainListener.onMessage(packet)
     }

@@ -8,12 +8,7 @@ import no.nav.reka.river.IDataListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.demandValue
 
-abstract class DataKanal(val rapidsConnection: RapidsConnection) : IDataListener {
-    abstract val eventName: MessageType.Event
-
-    fun start() {
-        DataRiver(rapidsConnection,this,accept()).start()
-    }
+abstract class DataKanal(open val eventName: MessageType.Event) : IDataListener {
 
     override fun accept() : River.PacketValidation {
         return River.PacketValidation {

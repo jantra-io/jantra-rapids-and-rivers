@@ -2,7 +2,11 @@ package no.nav.reka.river.examples.example_6_simple_saga
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.Key
+import no.nav.reka.river.bridge.DataRiver
+import no.nav.reka.river.bridge.EventRiver
+import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.composite.DelegatingFailKanal
+import no.nav.reka.river.composite.FailKanal
 import no.nav.reka.river.composite.SagaRunner
 import no.nav.reka.river.composite.StatefullDataKanal
 import no.nav.reka.river.composite.StatefullEventKanal
@@ -22,12 +26,20 @@ import no.nav.reka.river.redis.RedisStore
 
 fun RapidsConnection.buildSagaScenario(redisStore: RedisStore): RapidsConnection {
     val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this)
-    val sagaRunner = SagaRunner(redisStore,formattingService)
-    val datakanal = StatefullDataKanal(arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),EventName.DOCUMENT_RECIEVED,sagaRunner,this,redisStore)
-    sagaRunner.dataKanal = datakanal
-    datakanal.start()
-    StatefullEventKanal(redisStore, EventName.DOCUMENT_RECIEVED, arrayOf(DataFelt.RAW_DOCUMENT), sagaRunner, this).start()
-    DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this).start()
+    val sagaRunner = SagaRunner(redisStore,
+                                formattingService
+                                )
+    val dataListener =  StatefullDataKanal(EventName.DOCUMENT_RECIEVED,
+                                        arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),
+                                        sagaRunner,
+                                        redisStore,
+                                        this@buildSagaScenario)
+    sagaRunner.dataKanal = dataListener
+    DataRiver(this,dataListener, dataListener.accept()).start()
+    val eventListener = StatefullEventKanal(EventName.DOCUMENT_RECIEVED, redisStore, arrayOf(DataFelt.RAW_DOCUMENT),sagaRunner)
+    EventRiver(this, eventListener, eventListener.accept()).start()
+    val failKanal = DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this)
+    FailRiver(this,failKanal,failKanal.accept()).start()
 
 
     FormatDokumentService(this).start()
@@ -40,9 +52,11 @@ fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
 
     topology(this) {
         saga("My saga",redisStore) {
-            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this@buildSagaViaDSL))
+            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED,
+                           redisStore,
+                      this@buildSagaViaDSL))
             eventListener(EventName.DOCUMENT_RECIEVED) {
-                this.capture(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE)
+                this.capture(DataFelt.RAW_DOCUMENT)
             }
             dataListener(
                         DataFelt.FORMATED_DOCUMENT,
@@ -74,6 +88,7 @@ fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
                     it.interestedIn(DataFelt.FORMATED_DOCUMENT_IBM)
                 }
             }
+            failListener{}
         }
     }.start()
     return this
