@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
+import no.nav.reka.river.redis.RedisPoller
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -30,6 +31,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     lateinit var redisStore: RedisStore
+    lateinit var redisPoller: RedisPoller
 
     val rapid by lazy {
         RapidApplication.create(
@@ -54,6 +56,7 @@ abstract class EndToEndTest : ContainerTest(), RapidsConnection.MessageListener 
     @BeforeAll
     fun beforeAllEndToEnd() {
         redisStore = RedisStore(redisContainer.redisURI)
+        redisPoller = RedisPoller(redisContainer.redisURI)
        // rapid.buildApp(redisStore)
         appBuilder.invoke(rapid,redisStore)
 /*

@@ -5,6 +5,7 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Data
 import no.nav.reka.river.model.Event
+import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
 
 class Rapid(val rapidsConnection: RapidsConnection) {
@@ -30,6 +31,10 @@ fun RapidsConnection.publish(data: Data) {
 }
 fun RapidsConnection.publish(event: Event) {
     this.publish(event.toJsonMessage().toJson())
+}
+
+fun RapidsConnection.publish(fail: Fail) {
+    this.publish(fail.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(message: Message) {

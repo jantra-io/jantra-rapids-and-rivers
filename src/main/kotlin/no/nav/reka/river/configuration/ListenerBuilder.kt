@@ -51,8 +51,9 @@ class ListenerBuilder(val rapid:RapidsConnection) {
             return this
         }
 
-        fun accept(accepts: River.PacketValidation) {
+        fun accept(accepts: River.PacketValidation) : EventListenerBuilder {
             this.accepts = accepts
+            return this
         }
 
         fun build() : ListenerBuilder {
@@ -91,13 +92,14 @@ class ListenerBuilder(val rapid:RapidsConnection) {
         lateinit var accepts: River.PacketValidation
         lateinit var listener: IDataListener
 
-        fun dataListener(listener: IDataListener) : DataListenerBuilder {
+        fun implementation(listener: IDataListener) : DataListenerBuilder {
             this.listener = listener
             return this
         }
 
-        fun accept(validation: River.PacketValidation) {
+        fun accept(validation: River.PacketValidation) : DataListenerBuilder {
             this.accepts = validation
+            return this
         }
 
         fun build() : ListenerBuilder {

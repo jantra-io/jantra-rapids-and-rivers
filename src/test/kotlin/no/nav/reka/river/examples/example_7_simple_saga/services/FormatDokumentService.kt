@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.example_6_simple_saga.services
+package no.nav.reka.river.examples.example_7_simple_saga.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River

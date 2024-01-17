@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.example_6_simple_saga
+package no.nav.reka.river.examples.example_7_simple_saga
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.Key
@@ -6,7 +6,6 @@ import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
 import no.nav.reka.river.composite.DelegatingFailKanal
-import no.nav.reka.river.composite.FailKanal
 import no.nav.reka.river.composite.SagaRunner
 import no.nav.reka.river.composite.StatefullDataKanal
 import no.nav.reka.river.composite.StatefullEventKanal
@@ -15,9 +14,9 @@ import no.nav.reka.river.demandValue
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
-import no.nav.reka.river.examples.example_6_simple_saga.services.FormatDokumentService
-import no.nav.reka.river.examples.example_6_simple_saga.services.LegacyIBMFormatter
-import no.nav.reka.river.examples.example_6_simple_saga.services.PersistDocument
+import no.nav.reka.river.examples.example_7_simple_saga.services.FormatDokumentService
+import no.nav.reka.river.examples.example_7_simple_saga.services.LegacyIBMFormatter
+import no.nav.reka.river.examples.example_7_simple_saga.services.PersistDocument
 import no.nav.reka.river.interestedIn
 
 import no.nav.reka.river.redis.RedisStore
@@ -88,20 +87,4 @@ fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
         }
     }.start()
     return this
-/*
-    val formattingService = DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED, redisStore, this)
-    val sagaRunner = SagaRunner(redisStore,formattingService)
-    val datakanal = StatefullDataKanal(arrayOf(DataFelt.FORMATED_DOCUMENT,DataFelt.FORMATED_DOCUMENT_IBM,DataFelt.DOCUMENT_REFERECE),EventName.DOCUMENT_RECIEVED,sagaRunner,this,redisStore)
-    sagaRunner.dataKanal = datakanal
-    datakanal.start()
-    StatefullEventKanal(redisStore, EventName.DOCUMENT_RECIEVED, arrayOf(DataFelt.RAW_DOCUMENT), sagaRunner, this).start()
-    DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this).start()
-
-
-    FormatDokumentService(this).start()
-    LegacyIBMFormatter(this).start()
-    PersistDocument(this).start()
-    return this
-
- */
 }

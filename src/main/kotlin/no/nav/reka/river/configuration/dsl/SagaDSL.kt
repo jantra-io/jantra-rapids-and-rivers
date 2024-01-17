@@ -26,7 +26,6 @@ import no.nav.reka.river.redis.RedisStore
 
 class SagaBuilder(private val rapid: RapidsConnection,
                   private val redisStore: RedisStore,
-                  val capture: MutableList<IKey> = mutableListOf(),
                   val løser: MutableList<BehovRiver> = mutableListOf(),
                   val failListeners: MutableList<FailRiver> = mutableListOf()
 ) {
@@ -35,14 +34,12 @@ class SagaBuilder(private val rapid: RapidsConnection,
     private lateinit var eventListener: StatefullEventKanal
     lateinit var dataListener: StatefullDataKanal
 
+    @DSLTopology
     fun implementation(implementation: Saga) {
         sagaRunner = SagaRunner(redisStore,rapid,implementation )
     }
 
-    @DSLTopology
-    fun capture(vararg datafelter:IDataFelt) {
-        capture.addAll(datafelter)
-    }
+
     @DSLTopology
     fun eventListener(eventName: MessageType.Event ,block: SagaEventListenerBuilder.()-> Unit) {
         eventListener = SagaEventListenerBuilder(eventName,redisStore,rapid,sagaRunner).apply(block).build()

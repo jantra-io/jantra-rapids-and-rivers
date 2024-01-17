@@ -1,9 +1,7 @@
-package no.nav.reka.river.examples.example_6_simple_saga
+package no.nav.reka.river.examples.example_7_simple_saga
 
-import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helsearbeidsgiver.felles.rapidsrivers.composite.Transaction
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.Rapid
 import no.nav.reka.river.composite.Saga
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
@@ -14,7 +12,6 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.TxMessage
 import no.nav.reka.river.publish
 import no.nav.reka.river.redis.RedisKey
-import no.nav.reka.river.redis.RedisStore
 
 class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
 
@@ -29,10 +26,12 @@ class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
             rapid.publish(event.createBehov(BehovName.FORMAT_DOCUMENT_IBM, mapOf(DataFelt.RAW_DOCUMENT to rawDocument)))
         }
         else if(isDataCollected(*step1data(message.uuid()))) {
-            takeIf { message is Data }.apply {
-                (message as Data).createBehov(BehovName.PERSIST_DOCUMENT, mapOfNotNull(
-                    DataFelt.FORMATED_DOCUMENT to  redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT)).takeIf { it!="" },
-                    DataFelt.FORMATED_DOCUMENT_IBM to redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT_IBM))!!)
+            message.takeIf { message is Data }
+                ?.let { message as Data }!!
+                .let {
+                    it.createBehov(BehovName.PERSIST_DOCUMENT, mapOfNotNull(
+                        DataFelt.FORMATED_DOCUMENT to  redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT)).takeIf { it!="" },
+                        DataFelt.FORMATED_DOCUMENT_IBM to redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT_IBM))!!)
                 ).also {
                     rapid.publish(it)
                 }

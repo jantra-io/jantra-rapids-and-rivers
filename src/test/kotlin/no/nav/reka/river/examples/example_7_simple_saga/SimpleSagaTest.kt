@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.example_6_simple_saga
+package no.nav.reka.river.examples.example_7_simple_saga
 
 import com.fasterxml.jackson.module.kotlin.contains
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -76,7 +76,7 @@ class SimpleSagaTest : EndToEndTest() {
 
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaViaDSL(redisStore)}
+        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaScenario(redisStore) }// .buildSagaViaDSL(redisStore)}
 
 
 }

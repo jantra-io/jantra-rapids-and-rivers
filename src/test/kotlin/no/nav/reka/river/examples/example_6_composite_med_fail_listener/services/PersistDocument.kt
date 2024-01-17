@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.example_6_simple_saga.services
+package no.nav.reka.river.examples.example_6_composite_med_fail_listener.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
@@ -20,7 +20,6 @@ class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnect
     override fun accept(): River.PacketValidation = River.PacketValidation {
         it.demandValue(Key.BEHOV,BehovName.PERSIST_DOCUMENT)
         it.interestedIn(DataFelt.FORMATED_DOCUMENT)
-        it.interestedIn(DataFelt.FORMATED_DOCUMENT_IBM)
     }
 
     private fun persistDocument(formatedDocument: String) : String {
@@ -29,8 +28,6 @@ class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnect
     }
     override fun onBehov(packet: Behov) {
         val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        rapidsConnection.publish(packet.createData(mapOf(DataFelt.DOCUMENT_REFERECE to "AB123")))
-
         rapidsConnection.publish(
             Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to "AB123"))
         )

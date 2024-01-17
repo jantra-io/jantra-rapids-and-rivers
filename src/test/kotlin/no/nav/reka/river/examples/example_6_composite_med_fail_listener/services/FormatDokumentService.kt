@@ -1,4 +1,4 @@
-package no.nav.reka.river.examples.composite_med_fail_listener.services
+package no.nav.reka.river.examples.example_6_composite_med_fail_listener.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River

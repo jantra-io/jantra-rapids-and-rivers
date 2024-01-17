@@ -1,8 +1,8 @@
-package no.nav.reka.river.examples.composite_med_fail_listener
+package no.nav.reka.river.examples.example_6_composite_med_fail_listener
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
-import no.nav.reka.river.examples.composite_med_fail_listener.services.DocumentRecievedListener
+import no.nav.reka.river.examples.example_6_composite_med_fail_listener.services.DocumentRecievedListener
 import no.nav.reka.river.configuration.ListenerBuilder
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_5_capture_fail_from_listener.services.FormatDokumentService
