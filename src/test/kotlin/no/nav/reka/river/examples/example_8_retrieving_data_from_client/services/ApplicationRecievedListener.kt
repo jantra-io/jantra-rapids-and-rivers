@@ -15,7 +15,7 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.publish
 import no.nav.reka.river.redis.RedisStore
 
-class ø(val rapidsConnection: RapidsConnection, val redisStore: RedisStore) : IEventListener,IDataListener, IFailListener {
+class ApplicationRecievedListener(val rapidsConnection: RapidsConnection, val redisStore: RedisStore) : IEventListener,IDataListener, IFailListener {
 
     override fun accept(): River.PacketValidation {
         TODO("Not yet implemented")

@@ -58,6 +58,7 @@ fun RapidsConnection.buildSagaViaDSL(redisStore: RedisStore): RapidsConnection {
                         DataFelt.FORMATED_DOCUMENT_IBM,
                         DataFelt.DOCUMENT_REFERECE
             )
+            
             løser(BehovName.FORMAT_DOCUMENT) {
                 implementation = FormatDokumentService(this@buildSagaViaDSL)
                 accepts {

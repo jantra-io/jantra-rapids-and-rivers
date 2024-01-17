@@ -1,10 +1,17 @@
 package no.nav.reka.river.examples.example_8_retrieving_data_from_client
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.reka.river.Key
 import no.nav.reka.river.configuration.ListenerBuilder
+import no.nav.reka.river.configuration.dsl.topology
+import no.nav.reka.river.demandValue
+import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
+import no.nav.reka.river.examples.example_7_simple_saga.services.FormatDokumentService
+import no.nav.reka.river.examples.example_7_simple_saga.services.LegacyIBMFormatter
 import no.nav.reka.river.examples.example_8_retrieving_data_from_client.services.ApplicationRecievedListener
+import no.nav.reka.river.examples.example_8_retrieving_data_from_client.services.DocumentFormatingSaga
 import no.nav.reka.river.examples.example_8_retrieving_data_from_client.services.PersistDocument
 import no.nav.reka.river.interestedIn
 
@@ -35,4 +42,50 @@ fun RapidsConnection.`client retrieving data`(redisStore: RedisStore): RapidsCon
 
 
     return this
+}
+
+fun RapidsConnection.`client retrieving data SAGA`(redisStore: RedisStore): RapidsConnection {
+
+     topology(this) {
+        saga("My saga",redisStore) {
+            implementation(DocumentFormatingSaga(EventName.DOCUMENT_RECIEVED))
+            eventListener(EventName.DOCUMENT_RECIEVED) {
+                this.capture(DataFelt.RAW_DOCUMENT)
+            }
+            dataListener(
+                        DataFelt.FORMATED_DOCUMENT,
+                        DataFelt.FORMATED_DOCUMENT_IBM,
+                        DataFelt.DOCUMENT_REFERECE
+            )
+
+            løser(BehovName.FORMAT_DOCUMENT) {
+                implementation = FormatDokumentService(this@`client retrieving data SAGA`)
+                accepts {
+                     it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
+                     it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT)
+                     it.interestedIn(DataFelt.RAW_DOCUMENT)
+                }
+            }
+            løser(BehovName.FORMAT_DOCUMENT_IBM) {
+                implementation = LegacyIBMFormatter(this@`client retrieving data SAGA`)
+                accepts {
+                      it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
+                      it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT_IBM)
+                      it.interestedIn(DataFelt.RAW_DOCUMENT)
+                      it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
+                }
+            }
+            løser(BehovName.PERSIST_DOCUMENT) {
+                implementation = no.nav.reka.river.examples.example_7_simple_saga.services.PersistDocument(this@`client retrieving data SAGA`)
+                accepts {
+                    it.demandValue(Key.BEHOV, BehovName.PERSIST_DOCUMENT)
+                    it.interestedIn(DataFelt.FORMATED_DOCUMENT)
+                    it.interestedIn(DataFelt.FORMATED_DOCUMENT_IBM)
+                }
+            }
+            failListener{}
+        }
+    }.start()
+    return this
+
 }

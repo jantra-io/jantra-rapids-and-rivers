@@ -18,6 +18,10 @@ sealed class RedisKey(open val uuid: String) {
         fun transactionKey(uuid: String, eventname: MessageType.Event): RedisKey {
             return TransactionKey(uuid, eventname)
         }
+
+        fun feilKey(uuid: String): RedisKey {
+            return FeilKey(uuid)
+        }
     }
 }
 
@@ -36,5 +40,11 @@ private data class TransactionKey(override val uuid: String, val eventName: Mess
 private data class ClientKey(override val uuid: String) : RedisKey(uuid) {
     override fun toString(): String {
         return uuid
+    }
+}
+
+private data class FeilKey(override val uuid: String) : RedisKey(uuid) {
+    override fun toString(): String {
+        return uuid + "FAIL"
     }
 }
