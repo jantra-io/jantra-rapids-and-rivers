@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.contains
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.helse.rapids_rivers.isMissingOrNull
 import no.nav.reka.river.EndToEndTest
 import no.nav.reka.river.Key
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
@@ -30,12 +31,22 @@ class SagaClientDataTest() : EndToEndTest() {
     @Test
     fun `2 step saga example`() {
 
-        val resultat = DocumentRecievedProducer(this.rapid,this.redisPoller).publish("My unformatted focument")
-         val jsonNode = ObjectMapper().readTree(resultat)
-        println(resultat)
-
+        val formattedDocumentResponse = DocumentRecievedProducer(this.rapid,this.redisPoller).publish("My unformatted focument")
+        val jsonNode = ObjectMapper().readTree(formattedDocumentResponse)
+        Assert.assertNull(jsonNode["feil"])
 
     }
+
+    @Test
+    fun `2 step saga example returning non critical feil`() {
+
+        val formattedDocumentResponse = DocumentRecievedProducer(this.rapid,this.redisPoller).publish("My unformatted ibm% focument",)
+        val jsonNode = ObjectMapper().readTree(formattedDocumentResponse)
+        Assert.assertFalse(jsonNode["feil"].isMissingOrNull())
+
+    }
+
+
 
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection

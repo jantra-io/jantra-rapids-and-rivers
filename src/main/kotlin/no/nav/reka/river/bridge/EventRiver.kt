@@ -6,6 +6,8 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.IEventListener
+import no.nav.reka.river.publish
+import java.util.*
 
 class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEventListener, private val riverValidation:River.PacketValidation) : River.PacketListener{
 
@@ -24,7 +26,11 @@ class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEve
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        eventListener.onEvent(Event.create(packet))
+        val event = Event.create(packet)
+        val uuid = UUID.randomUUID().toString()
+        event.uuid = uuid
+        rapidsConnection.publish(event)
+        eventListener.onEvent(event)
     }
 
 

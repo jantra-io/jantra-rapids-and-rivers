@@ -16,6 +16,7 @@ val kafkaTestcontainerVersion = "1.18.0"
 val lettuceVersion = "6.2.4.RELEASE"
 val testcontainersRedisJunitVersion = "1.6.4"
 val testcontainersVersion = "1.18.0"
+val h2Version = "2.2.224"
 
 group = "com.github.navikt"
 version = properties["version"] ?: "local-build"
@@ -49,6 +50,18 @@ dependencies {
     testImplementation("org.awaitility:awaitility:$awaitilityVersion")
     testImplementation("com.redis.testcontainers:testcontainers-redis-junit:$testcontainersRedisJunitVersion")
     testImplementation("org.testcontainers:kafka:$testcontainersVersion")
+    testImplementation("com.h2database:h2:$h2Version")
+
+    implementation("com.zaxxer:HikariCP:5.0.1")
+
+    implementation("org.jetbrains.exposed:exposed-core:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.43.0")
+    implementation("org.jetbrains.exposed:exposed-json:0.43.0")
+    implementation("org.flywaydb:flyway-core:9.16.3")
+    implementation("org.testcontainers:postgresql:1.18.0")
+    runtimeOnly("org.postgresql:postgresql:42.6.0")
 }
 
 java {
