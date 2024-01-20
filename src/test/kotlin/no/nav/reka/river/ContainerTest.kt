@@ -2,7 +2,7 @@ package no.nav.reka.river
 
 import com.redis.testcontainers.RedisContainer
 import com.zaxxer.hikari.HikariConfig
-import no.nav.reka.pond.eventstore.EVENTSTORE_TABLE
+import no.nav.reka.pond.eventstore.db.EVENTSTORE_TABLE
 import no.nav.reka.pond.eventstore.db.Database
 import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.admin.AdminClientConfig

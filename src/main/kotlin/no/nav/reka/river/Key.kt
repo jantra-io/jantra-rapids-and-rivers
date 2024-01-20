@@ -9,12 +9,13 @@ enum class Key(override val str: String) : IKey{
     EVENT_NAME("@event_name"),
     BEHOV("@behov"),
     FAILED_BEHOV("failed-behov"),
-    OPPRETTET("@opprettet"),
+    EVENT_TIME("@opprettet"),
     UUID("uuid"),
     CLIENT_ID("client_id"),
     TRANSACTION_ORIGIN("transaction_origin"),
     DATA("data"),
-    FAIL("fail");
+    FAIL("fail"),
+    APP_KEY("app_key");
 
     override fun toString(): String =
             str
