@@ -12,7 +12,7 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection ) : IEventListener, IFailListener {
+class DocumentRecievedListener(rapidsConnection: RapidsConnection ) : IEventListener, IFailListener,ValidatedMessage {
     val event: MessageType.Event  get() = EventName.DOCUMENT_RECIEVED
     val rapid = Rapid(rapidsConnection)
 

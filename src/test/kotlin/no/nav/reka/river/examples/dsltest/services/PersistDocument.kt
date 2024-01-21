@@ -12,9 +12,7 @@ import no.nav.reka.river.publish
 
 class PersistDocument(val rapidsConnection: RapidsConnection) : IBehovListener{
 
-    override fun accept(): River.PacketValidation = River.PacketValidation {
 
-    }
 
     private fun persistDocument(formatedDocument: String) : String {
         print("persisting formated document $formatedDocument")

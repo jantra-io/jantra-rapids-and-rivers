@@ -11,6 +11,7 @@ import no.nav.reka.river.IFailListener
 import no.nav.reka.river.IMessageListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.ValidatedMessage
 import no.nav.reka.river.basic.Løser
 import no.nav.reka.river.bridge.BehovRiver
 import no.nav.reka.river.bridge.DataRiver
@@ -124,7 +125,8 @@ class FailListenerBuilder(private val event: MessageType.Event, private val rapi
     }
 
     internal fun build() : FailRiver {
-        val validation = if (::accept.isInitialized) accept else implementation.accept() + River.PacketValidation{it.demandValue(
+        var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
+        val validation = if (::accept.isInitialized) accept else inlineValidator + River.PacketValidation{it.demandValue(
             Key.EVENT_NAME,event)}
         return FailRiver(rapid,implementation, validation)
     }
@@ -146,7 +148,8 @@ class FailListenerBuilder(private val event: MessageType.Event, private val rapi
     }
 
     internal fun build() : BehovRiver {
-        val validation = (if (::accept.isInitialized) accept else implementation.accept()) +
+        var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
+        val validation = (if (::accept.isInitialized) accept else inlineValidator) +
                 {
                     it.demandValue(Key.EVENT_NAME,event)
                     it.demandValue(Key.BEHOV,behov)
@@ -175,7 +178,8 @@ class DataListenerBuilder(private val event: MessageType.Event, private val rapi
     }
 
     internal fun build() : DataRiver {
-        val validation = (if (::accept.isInitialized) accept else implementation.accept()) +
+        var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
+        val validation = (if (::accept.isInitialized) accept else inlineValidator) +
                 {
                     it.demandValue(Key.EVENT_NAME,event)
                 }

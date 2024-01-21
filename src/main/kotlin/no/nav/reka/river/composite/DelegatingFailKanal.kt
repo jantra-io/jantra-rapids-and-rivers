@@ -14,7 +14,4 @@ open class DelegatingFailKanal(
         mainListener.onMessage(packet)
     }
 
-    override fun accept(): River.PacketValidation {
-        return River.PacketValidation {  }
-    }
 }

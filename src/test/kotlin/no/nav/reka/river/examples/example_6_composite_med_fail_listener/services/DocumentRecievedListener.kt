@@ -12,7 +12,7 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.bridge.CompositeListener
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val rapid: Rapid = Rapid(rapidsConnection) ) : CompositeListener {
+class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val rapid: Rapid = Rapid(rapidsConnection) ) : CompositeListener,ValidatedMessage {
 
     val event:MessageType.Event get() = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation  {

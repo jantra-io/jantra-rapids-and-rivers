@@ -1,6 +1,7 @@
 package no.nav.reka.river.examples.example_7_simple_saga
 
 import no.nav.helse.rapids_rivers.RapidsConnection
+import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.Key
 import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
@@ -36,7 +37,7 @@ fun RapidsConnection.buildSagaScenario(redisStore: RedisStore): RapidsConnection
     val eventListener = StatefullEventKanal(EventName.DOCUMENT_RECIEVED, redisStore, arrayOf(DataFelt.RAW_DOCUMENT),sagaRunner)
     EventRiver(this, eventListener, eventListener.accept()).start()
     val failKanal = DelegatingFailKanal(EventName.DOCUMENT_RECIEVED,sagaRunner,this)
-    FailRiver(this,failKanal,failKanal.accept()).start()
+    FailRiver(this,failKanal, {  }).start()
 
 
     FormatDokumentService(this).start()

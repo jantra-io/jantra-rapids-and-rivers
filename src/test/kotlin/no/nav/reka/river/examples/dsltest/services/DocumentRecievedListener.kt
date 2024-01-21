@@ -11,8 +11,6 @@ import no.nav.reka.river.model.Fail
 
 class DocumentRecievedListener(rapidsConnection: RapidsConnection, val rapid: Rapid = Rapid(rapidsConnection) ) : IEventListener, IFailListener {
 
-    override fun accept(): River.PacketValidation   =
-         River.PacketValidation {}
 
     override fun onEvent(packet: Event) {
         this.rapid.publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT],

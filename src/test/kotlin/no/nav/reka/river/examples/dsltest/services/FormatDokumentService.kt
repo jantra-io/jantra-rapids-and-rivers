@@ -11,9 +11,6 @@ import no.nav.reka.river.publish
 
 class FormatDokumentService(val rapidsConnection: RapidsConnection) : IBehovListener {
 
-    override fun accept(): River.PacketValidation = River.PacketValidation {
-
-    }
 
     private fun formatDocument(rawDocument:String) {
         println("Document is now formated $rawDocument")

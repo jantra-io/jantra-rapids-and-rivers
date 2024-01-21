@@ -50,7 +50,6 @@ internal class BehovScrapper(val riverStore: RiverRepo) : IBehovListener {
 
     }
 
-    override fun accept() = River.PacketValidation {}
 
 }
 
@@ -58,8 +57,6 @@ internal class FailScrapper(val riverStore: RiverRepo) : IFailListener {
     override fun onFail(fail: Fail) {
         riverStore.put(fail)
     }
-
-    override fun accept() = River.PacketValidation {}
 
 }
 

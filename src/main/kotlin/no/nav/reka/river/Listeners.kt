@@ -20,17 +20,17 @@ interface IEventListener : IMessageListener {
 
 }
 
-interface  IFailListener : IMessageListener,ValidatedMessage {
+interface  IFailListener : IMessageListener {
     fun onFail(fail: Fail)
 
 }
 
-interface IDataListener : IMessageListener,ValidatedMessage {
+interface IDataListener : IMessageListener {
 
     fun onData(data: Data)
 }
 
-interface IBehovListener : IMessageListener,ValidatedMessage {
+interface IBehovListener : IMessageListener {
 
     fun onBehov(behov: Behov)
 }

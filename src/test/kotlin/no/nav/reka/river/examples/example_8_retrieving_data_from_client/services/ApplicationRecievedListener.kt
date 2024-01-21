@@ -17,9 +17,7 @@ import no.nav.reka.river.redis.RedisStore
 
 class ApplicationRecievedListener(val rapidsConnection: RapidsConnection, val redisStore: RedisStore) : IEventListener,IDataListener, IFailListener {
 
-    override fun accept(): River.PacketValidation {
-        TODO("Not yet implemented")
-    }
+
 
     override fun onEvent(event: Event) {
         redisStore.set(event.uuid(),event.clientId)

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataFelt
+import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.demandValue
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.redis.IRedisStore
 import org.slf4j.LoggerFactory
@@ -23,6 +25,7 @@ class StatefullEventKanal(
 
     override fun accept(): River.PacketValidation {
         return River.PacketValidation {
+            it.demandValue(Key.EVENT_NAME,eventName)
             it.interestedIn(*dataFelter.map { it.str }.toTypedArray())
         }
     }

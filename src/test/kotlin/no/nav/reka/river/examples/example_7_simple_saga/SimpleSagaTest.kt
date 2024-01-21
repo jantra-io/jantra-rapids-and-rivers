@@ -28,7 +28,7 @@ class SimpleSagaTest : EndToEndTest() {
     fun `2 step saga example`() {
 
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(DataFelt.RAW_DOCUMENT to RAW_DOCUMNET)))
-        Thread.sleep(50000)
+        Thread.sleep(5000)
 
         this.messages
             .withEventName(EventName.DOCUMENT_RECIEVED)
@@ -76,7 +76,7 @@ class SimpleSagaTest : EndToEndTest() {
 
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaScenario(redisStore) }// .buildSagaViaDSL(redisStore)}
+        get() = {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildSagaViaDSL(redisStore) }// .buildSagaViaDSL(redisStore)}
 
 
 }
