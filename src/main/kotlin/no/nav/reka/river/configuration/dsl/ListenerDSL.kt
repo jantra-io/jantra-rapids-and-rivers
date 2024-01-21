@@ -9,6 +9,7 @@ import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.ValidatedMessage
 import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
@@ -55,7 +56,8 @@ class EventListenerDSLBuilder(private val event: MessageType.Event, private val 
     }
 
     internal fun build() : EventRiver {
-        val validation = if (::accept.isInitialized) accept else implementation.accept() + River.PacketValidation{it.demandValue(
+        var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
+        val validation = if (::accept.isInitialized) accept else inlineValidator + River.PacketValidation{it.demandValue(
             Key.EVENT_NAME,event)}
         return EventRiver(rapid,implementation, validation)
     }

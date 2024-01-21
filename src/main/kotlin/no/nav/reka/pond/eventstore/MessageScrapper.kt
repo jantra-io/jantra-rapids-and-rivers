@@ -8,14 +8,13 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.pond.eventstore.db.EventStoreRepo
 import no.nav.reka.pond.eventstore.db.RiverRepo
 import no.nav.reka.river.IBehovListener
-import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
 import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 
 
-class EventScrapper(val rapidsConnection: RapidsConnection,val eventStore:EventStoreRepo,val keyProvider:(Event) -> String) : River.PacketListener {
+internal class EventScrapper(val rapidsConnection: RapidsConnection,val eventStore:EventStoreRepo,val keyProvider:(Event) -> String) : River.PacketListener {
 
 
      fun start() {
@@ -39,7 +38,7 @@ class EventScrapper(val rapidsConnection: RapidsConnection,val eventStore:EventS
 
 }
 
-class BehovScrapper(val riverStore: RiverRepo) : IBehovListener {
+internal class BehovScrapper(val riverStore: RiverRepo) : IBehovListener {
     override fun onBehov(behov: Behov) {
         if (behov.behov.value == "create-river") {
              println("Invoked")
@@ -55,7 +54,7 @@ class BehovScrapper(val riverStore: RiverRepo) : IBehovListener {
 
 }
 
-class FailScrapper(val riverStore: RiverRepo) : IFailListener {
+internal class FailScrapper(val riverStore: RiverRepo) : IFailListener {
     override fun onFail(fail: Fail) {
         riverStore.put(fail)
     }

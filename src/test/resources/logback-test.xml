@@ -6,12 +6,12 @@
 
     <logger name="org.apache" level="WARN" />
     <logger name="kafka" level="WARN" />
-    <logger name="Exposed" level="DEBUG">
+    <logger name="Exposed" level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="STDOUT_JSON"/>
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT_JSON"/>
     </root>
 </configuration>

@@ -7,6 +7,7 @@ import no.nav.reka.river.MessageType
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
+import no.nav.reka.river.ValidatedMessage
 import no.nav.reka.river.bridge.DataRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
@@ -57,7 +58,8 @@ class ListenerBuilder(val rapid:RapidsConnection) {
         }
 
         fun build() : ListenerBuilder {
-            val validation = if (::accepts.isInitialized) accepts else listener.accept() + River.PacketValidation{it.demandValue(Key.EVENT_NAME,listenerBuilder.event)}
+            val inlineValidator = if (!::accepts.isInitialized  && listener is ValidatedMessage) (listener as ValidatedMessage).accept() else River.PacketValidation{}
+            val validation = if (::accepts.isInitialized) accepts else inlineValidator + River.PacketValidation{it.demandValue(Key.EVENT_NAME,listenerBuilder.event)}
             listenerBuilder.eventRiver = EventRiver(listenerBuilder.rapid,listener, validation)
             return listenerBuilder
         }

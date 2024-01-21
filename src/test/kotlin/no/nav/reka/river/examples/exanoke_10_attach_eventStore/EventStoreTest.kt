@@ -20,7 +20,7 @@ class EventStoreTest: EndToEndTest() {
     @Test
     fun `Event is triggering 2 behov, the last is emitting event`() {
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(Key.APP_KEY to "doc121234", DataFelt.RAW_DOCUMENT to RAW_DOCUMNET)))
-        Thread.sleep(10000)
+        Thread.sleep(6000)
         var riverId = ""
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_DOCUMENT).first()) {
             Assert.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)

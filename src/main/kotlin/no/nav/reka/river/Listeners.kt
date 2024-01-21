@@ -13,7 +13,7 @@ interface ValidatedMessage {
     fun accept(): River.PacketValidation
 }
 
-interface IEventListener : IMessageListener,ValidatedMessage {
+interface IEventListener : IMessageListener {
 
     fun onEvent(event: Event)
 
