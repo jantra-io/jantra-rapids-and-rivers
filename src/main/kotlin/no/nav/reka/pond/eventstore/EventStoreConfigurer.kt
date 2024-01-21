@@ -8,17 +8,19 @@ import no.nav.reka.river.Key
 import no.nav.reka.river.bridge.BehovRiver
 import no.nav.reka.river.bridge.EventRiver
 import no.nav.reka.river.bridge.FailRiver
+import no.nav.reka.river.interestedIn
 import no.nav.reka.river.model.Event
 
 
-fun RapidsConnection.configureEventStore(database: Database) {
+fun RapidsConnection.configureEventStore(database: Database): RapidsConnection {
     val eventStoreRepo = EventStoreRepo(database)
     val riverStoreRepo = RiverRepo(database)
 
-    EventRiver(this, EventScrapper(eventStoreRepo) {
+    EventScrapper(this, eventStoreRepo) {
         event: Event -> event[Key.APP_KEY].asText()
-    },{}).start()
+    }.start()
     BehovRiver(this, BehovScrapper(riverStoreRepo),{}).start()
     FailRiver(this, FailScrapper(riverStoreRepo),{}).start()
+    return this
 
 }

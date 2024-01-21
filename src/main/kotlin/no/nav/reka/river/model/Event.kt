@@ -9,6 +9,7 @@ import no.nav.reka.river.IKey
 import no.nav.reka.river.InternalEvent
 import no.nav.reka.river.MessageType
 import no.nav.reka.river.Key
+import no.nav.reka.river.interestedIn
 import no.nav.reka.river.mapOfNotNull
 
 class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, val clientId: String?=null) : Message, TxMessage {
@@ -28,6 +29,8 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
             it.rejectKey(Key.UUID.str())
             it.interestedIn(Key.TRANSACTION_ORIGIN.str)
             it.interestedIn(Key.CLIENT_ID.str)
+            it.interestedIn(Key.EVENT_TIME)
+            it.interestedIn(Key.APP_KEY)
         }
 
         fun create(event:MessageType.Event,clientId: String? = null, map: Map<IKey, Any> = emptyMap() ) : Event {
@@ -48,7 +51,7 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
-        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid) + map.mapKeys { it.key.str }))
+        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid, Key.EVENT_ID.str() to jsonMessage.id) + map.mapKeys { it.key.str }))
     }
 
     override fun uuid() = this.uuid?:""

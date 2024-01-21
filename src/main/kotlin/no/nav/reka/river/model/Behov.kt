@@ -9,9 +9,10 @@ import no.nav.reka.river.InternalBehov
 import no.nav.reka.river.InternalEvent
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
+import no.nav.reka.river.interestedIn
 import no.nav.reka.river.mapOfNotNull
 
-class Behov(val event: MessageType.Event,
+class Behov internal constructor(val event: MessageType.Event,
             val behov: MessageType.Behov,
             private val jsonMessage: JsonMessage) : Message,TxMessage {
 
@@ -27,6 +28,8 @@ class Behov(val event: MessageType.Event,
             it.rejectKey(Key.DATA.str())
             it.rejectKey(Key.FAIL.str())
             it.interestedIn(Key.UUID.str())
+            it.interestedIn(Key.EVENT_TIME)
+            it.interestedIn(Key.EVENT_ID)
         }
 
         fun create(event: MessageType.Event, behov: MessageType.Behov ,map: Map<IKey, Any> = emptyMap() ) : Behov {
@@ -52,7 +55,7 @@ class Behov(val event: MessageType.Event,
     }
 
     fun createBehov(behov: MessageType.Behov,data: Map<IKey, Any>) : Behov {
-        return Behov(this.event,behov, JsonMessage.newMessage(event.value, mapOf(Key.BEHOV.str() to behov.value) + data.mapKeys { it.key.str }))
+        return Behov(this.event,behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.UUID.str() to uuid(),Key.BEHOV.str() to behov.value) + data.mapKeys { it.key.str }))
     }
 
     override fun uuid() = jsonMessage[Key.UUID.str()].asText()

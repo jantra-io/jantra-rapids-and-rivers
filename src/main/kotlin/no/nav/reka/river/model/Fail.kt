@@ -8,7 +8,7 @@ import no.nav.reka.river.*
 import no.nav.reka.river.InternalBehov
 import no.nav.reka.river.InternalEvent
 
-class Fail(val event: MessageType.Event,
+class Fail internal constructor(val event: MessageType.Event,
            val behov: MessageType.Behov? = null,
            val feilmelding: String,
            val uuid: String? = null,
@@ -26,6 +26,7 @@ class Fail(val event: MessageType.Event,
             it.demandKey(Key.FAIL.str())
             it.interestedIn(Key.UUID.str())
             it.interestedIn(Key.FAILED_BEHOV)
+            it.interestedIn(Key.EVENT_TIME)
         }
 
         fun create(event:MessageType.Event, behov: MessageType.Behov? = null,feilmelding:String, data: Map<IKey, Any> = emptyMap() ) : Fail {

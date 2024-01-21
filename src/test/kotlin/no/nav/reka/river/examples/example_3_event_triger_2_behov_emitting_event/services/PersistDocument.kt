@@ -28,6 +28,6 @@ class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnect
     }
     override fun onBehov(packet: Behov) {
         val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to "AB123")))
+        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED,  mapOf(Key.TRANSACTION_ORIGIN to packet.uuid(), DataFelt.DOCUMENT_REFERECE to "AB123")))
     }
 }

@@ -22,6 +22,10 @@
     <logger name="tjenestekall" level="DEBUG" additivity="false">
         <appender-ref ref="secureLog" />
     </logger>
+    <logger name="Exposed" level="debug">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT_JSON"/>
+    </logger>
 
     <root level="INFO">
         <appender-ref ref="STDOUT_JSON"/>

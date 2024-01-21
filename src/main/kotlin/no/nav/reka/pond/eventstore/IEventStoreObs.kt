@@ -5,7 +5,7 @@ import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Message
 import java.util.UUID
 
-interface IEventStore {
+interface IEventStoreObs {
 
     fun put(event:Event)
 

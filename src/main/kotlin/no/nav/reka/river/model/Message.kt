@@ -12,7 +12,4 @@ interface Message {
     operator fun set(key: IKey, value: Any)
     fun toJsonMessage(): JsonMessage
 
-    fun publishOn(rapidsConnection: RapidsConnection) {
-        rapidsConnection.publish(this.toJsonMessage().toJson())
-    }
 }

@@ -41,6 +41,16 @@ class RiverRepo(val database: Database) {
          }
     }
 
+     fun createRiver(event:Behov) {
+        transaction (database.db) {
+            RIVER_EVENT.insert {
+                it[eventId] = event[Key.EVENT_ID].asText()
+                it[riverId] = event[Key.UUID].asText()
+            }
+        }
+
+    }
+
     fun get(riverId:String): Message? {
         val row = transaction (database.db) {
             RIVER_TABLE.select {
@@ -49,13 +59,13 @@ class RiverRepo(val database: Database) {
         }.first()
         val jsonMessage = JsonMessage(row[RIVER_TABLE.message], MessageProblems(row[RIVER_TABLE.message]))
         if(row[RIVER_TABLE.isFail]) {
-            return Fail.create(jsonMessage)
+            return  jsonMessage.also { Fail.packetValidator.validate(it) }.let {   Fail.create(jsonMessage)}
         }
         else if (row[RIVER_TABLE.behovName] !=null ) {
-            return Behov.create(jsonMessage)
+            return jsonMessage.also { Behov.packetValidator.validate(it) }.let { Behov.create(jsonMessage) }
         }
         else if (row[RIVER_TABLE.eventName].isNullOrBlank()) {
-            return Event.create(jsonMessage)
+            return jsonMessage.also { Event.packetValidator.validate(it) }.let { Event.create(jsonMessage) }
         }
         else {
             throw IllegalArgumentException("at least one of event or behov should be defined")

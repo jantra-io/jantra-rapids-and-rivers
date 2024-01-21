@@ -8,7 +8,7 @@ import no.nav.reka.river.*
 import no.nav.reka.river.InternalBehov
 import no.nav.reka.river.InternalEvent
 
-class Data(val event: MessageType.Event, private val jsonMessage: JsonMessage) : Message,TxMessage  {
+class Data internal constructor(val event: MessageType.Event, private val jsonMessage: JsonMessage) : Message,TxMessage  {
 
     init {
         packetValidator.validate(jsonMessage)

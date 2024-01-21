@@ -8,9 +8,15 @@ CREATE TABLE eventstore
     message							TEXT						NOT NULL
 );
 
+create table event_to_river(
+    id          serial primary key,
+    event_id    VARCHAR(256),
+    river_id    VARCHAR(256)
+);
+
 
 create table riverstore(
-    id                     bigint auto_increment,
+    id                     serial primary key,
     river_id               VARCHAR(256) NOT NULL,
     event_name             VARCHAR(50),
     behov_name             VARCHAR(50),

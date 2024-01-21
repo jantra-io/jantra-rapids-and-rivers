@@ -15,7 +15,8 @@ enum class Key(override val str: String) : IKey{
     TRANSACTION_ORIGIN("transaction_origin"),
     DATA("data"),
     FAIL("fail"),
-    APP_KEY("app_key");
+    APP_KEY("app_key"),
+    EVENT_ID("river-event-id");
 
     override fun toString(): String =
             str
