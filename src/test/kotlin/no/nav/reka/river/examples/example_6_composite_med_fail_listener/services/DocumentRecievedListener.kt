@@ -12,7 +12,7 @@ import no.nav.reka.river.model.Fail
 import no.nav.reka.river.bridge.CompositeListener
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
 
-class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val rapid: Rapid = Rapid(rapidsConnection) ) : CompositeListener,ValidatedMessage {
+class DocumentRecievedListener(val rapid: RapidsConnection) : CompositeListener,ValidatedMessage {
 
     val event:MessageType.Event get() = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation  {
@@ -26,13 +26,13 @@ class DocumentRecievedListener(rapidsConnection: RapidsConnection, override val 
         TODO("Not yet implemented")
     }
 
-    override fun onEvent(packet: Event) {
-        this.rapid.publishBehov(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT],
+    override fun onEvent(event: Event) {
+        this.rapid.publish(event.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to event[DataFelt.RAW_DOCUMENT],
             DataFelt.RAW_DOCUMENT_FORMAT to "ebcdic")))
     }
 
     override fun onFail(fail: Fail) {
-        this.rapid.publishBehov(Behov.create(fail.event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
+        this.rapid.publish(Behov.create(fail.event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
     }
 
 }

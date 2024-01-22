@@ -17,7 +17,6 @@ class LegacyIBMFormatter(rapidsConnection: RapidsConnection): Løser(rapidsConne
 
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
         it.demandValue(Key.BEHOV, BehovName.FORMAT_DOCUMENT_IBM)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)

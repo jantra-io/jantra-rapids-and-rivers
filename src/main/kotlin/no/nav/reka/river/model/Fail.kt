@@ -59,6 +59,10 @@ class Fail internal constructor(val event: MessageType.Event,
 
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
+     fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
+        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid, Key.EVENT_ID.str() to jsonMessage.id) + map.mapKeys { it.key.str }))
+    }
+
     override fun uuid(): String {
         return uuid!!
     }

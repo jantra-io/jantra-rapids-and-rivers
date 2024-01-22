@@ -16,7 +16,7 @@ import no.nav.reka.river.publish
 
 class LegacyIBMFormatter(val rapidsConnection: RapidsConnection): IBehovListener {
 
-    
+
     override fun onBehov(packet: Behov) {
         rapidsConnection.publish(
             packet.createBehov(

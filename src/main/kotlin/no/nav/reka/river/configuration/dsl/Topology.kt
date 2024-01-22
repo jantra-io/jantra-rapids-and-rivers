@@ -118,7 +118,9 @@ class EventListenerBuilder(private val eventName: MessageType.Event,
     }
 
     internal fun build() : EventRiver {
-        val validation = if (::accept.isInitialized) accept else  River.PacketValidation{it.demandValue(
+        var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
+
+        val validation = (if (::accept.isInitialized) accept else inlineValidator) +  River.PacketValidation{it.demandValue(
             Key.EVENT_NAME,eventName)}
         return EventRiver(rapid,implementation, validation)
     }

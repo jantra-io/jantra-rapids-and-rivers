@@ -18,7 +18,6 @@ class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsC
 
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, EventName.DOCUMENT_RECIEVED)
         it.demandValue(Key.BEHOV,BehovName.FORMAT_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
         it.interestedIn(DataFelt.RAW_DOCUMENT_FORMAT)
@@ -28,12 +27,12 @@ class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsC
         println("Document is now formated $rawDocument")
     }
 
-    override fun onBehov(packet: Behov) {
-        formatDocument(packet[DataFelt.RAW_DOCUMENT].asText())
-        val documentFormat = packet[DataFelt.RAW_DOCUMENT_FORMAT].takeUnless { it.isMissingOrNull() }?.asText()
+    override fun onBehov(behov: Behov) {
+        formatDocument(behov[DataFelt.RAW_DOCUMENT].asText())
+        val documentFormat = behov[DataFelt.RAW_DOCUMENT_FORMAT].takeUnless { it.isMissingOrNull() }?.asText()
         if (documentFormat != "ebcdic") {
             rapidsConnection.publish(
-                packet.createBehov(
+                behov.createBehov(
                     BehovName.PERSIST_DOCUMENT,
                     mapOf(DataFelt.FORMATED_DOCUMENT to "This is my formated document")
                 )
@@ -41,7 +40,7 @@ class FormatDokumentService(rapidsConnection: RapidsConnection) : Løser(rapidsC
         }
         else {
             rapidsConnection.publish(
-             packet.createFail("Unable to process files with EBCDIC charset")
+             behov.createFail("Unable to process files with EBCDIC charset")
             )
         }
     }
