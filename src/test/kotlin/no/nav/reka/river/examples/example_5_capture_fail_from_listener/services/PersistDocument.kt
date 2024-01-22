@@ -2,6 +2,7 @@ package no.nav.reka.river.examples.example_5_capture_fail_from_listener.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.IBehovListener
 import no.nav.reka.river.basic.Løser
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
@@ -14,15 +15,9 @@ import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.publish
 
-class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
+class PersistDocument(val rapidsConnection: RapidsConnection) : IBehovListener{
 
-    override val event: MessageType.Event
-        get() =  EventName.DOCUMENT_RECIEVED
 
-    override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.BEHOV,BehovName.PERSIST_DOCUMENT)
-        it.interestedIn(DataFelt.FORMATED_DOCUMENT)
-    }
 
     private fun persistDocument(formatedDocument: String) : String {
         print("persisting formated document $formatedDocument")

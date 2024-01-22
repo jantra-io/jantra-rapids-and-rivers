@@ -21,6 +21,7 @@ import no.nav.reka.river.demandValue
 import no.nav.reka.river.interestedIn
 import no.nav.reka.river.plus
 import no.nav.reka.river.redis.RedisStore
+import java.lang.RuntimeException
 
 @DSLTopology
 class TopologyBuilder(private val rapid: RapidsConnection) {
@@ -44,26 +45,39 @@ class TopologyBuilder(private val rapid: RapidsConnection) {
 
 @DSLTopology
 class CompositionBuilder(private val rapid: RapidsConnection,
-                         val løser: List<BehovRiver> = mutableListOf(),
+                         val løser: MutableList<BehovRiver> = mutableListOf(),
                          val dataListensers: MutableList<DataRiver> = mutableListOf(),
                          val faillisteners: MutableList<FailRiver> = mutableListOf()
 ) {
     private lateinit var eventListener:EventRiver
+    private lateinit var event:MessageType.Event
 
 
     @DSLTopology
     fun eventListener(eventName: MessageType.Event ,block: EventListenerBuilder.()-> Unit) {
+        event = eventName
         eventListener = EventListenerBuilder(eventName,rapid).apply(block).build()
     }
-
-    private fun failListener(eventName: MessageType.Event,block: FailListenerBuilder.()-> Unit) {
-        faillisteners.add(FailListenerBuilder(eventName,rapid).apply(block).build())
+    @DSLTopology
+    fun løser(behov: MessageType.Behov,block: LøserBuilder.() -> Unit) {
+        if (!::event.isInitialized) throw RuntimeException("Eventlistener should be declared first")
+        løser.add(LøserBuilder(behov, event, rapid).apply(block).build())
+    }
+    @DSLTopology
+     fun dataListener(block: DataListenerBuilder.() -> Unit) {
+         if (!::event.isInitialized) throw RuntimeException("Eventlistener should be declared first")
+         dataListensers.add(DataListenerBuilder(event, rapid).apply ( block ).build())
+    }
+    @DSLTopology
+    fun failListener(block: FailListenerBuilder.()-> Unit) {
+        if (!::event.isInitialized) throw RuntimeException("Eventlistener should be declared first")
+        faillisteners.add(FailListenerBuilder(event,rapid).apply(block).build())
     }
 
     fun start() {
         eventListener.start()
         løser.forEach {
-            start()
+            it.start()
         }
         faillisteners.forEach { it.start() }
         dataListensers.forEach { it.start()}
@@ -126,7 +140,7 @@ class FailListenerBuilder(private val event: MessageType.Event, private val rapi
 
     internal fun build() : FailRiver {
         var inlineValidator = if (!::accept.isInitialized  &&  implementation is ValidatedMessage) (implementation as ValidatedMessage).accept() else River.PacketValidation{}
-        val validation = if (::accept.isInitialized) accept else inlineValidator + River.PacketValidation{it.demandValue(
+        val validation = (if (::accept.isInitialized) accept else inlineValidator) + River.PacketValidation{it.demandValue(
             Key.EVENT_NAME,event)}
         return FailRiver(rapid,implementation, validation)
     }
@@ -195,4 +209,7 @@ annotation class DSLTopology
 
 @DSLTopology
 fun topology(rapid: RapidsConnection, block: TopologyBuilder.() -> Unit) : TopologyBuilder = TopologyBuilder(rapid).apply(block)
+@DSLTopology
+fun composition(name: String = "",rapid: RapidsConnection,block: CompositionBuilder.() -> Unit)  = CompositionBuilder(rapid).apply(block)
+
 

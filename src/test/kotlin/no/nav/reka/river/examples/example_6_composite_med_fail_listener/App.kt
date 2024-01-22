@@ -24,8 +24,11 @@ fun RapidsConnection.`setup EventListener reacting to Failure`(): RapidsConnecti
             }
             .build()
         .start()
+    /*
     FormatDokumentService(this).start()
     LegacyIBMFormatter(this).start()
     PersistDocument(this).start()
+    */
     return this
+
 }
