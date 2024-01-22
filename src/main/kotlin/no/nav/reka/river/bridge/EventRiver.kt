@@ -6,11 +6,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.IEventListener
-import no.nav.reka.river.IKey
 import no.nav.reka.river.InternalBehov
-import no.nav.reka.river.InternalEvent
-import no.nav.reka.river.Key
-import no.nav.reka.river.mapOfNotNull
 import no.nav.reka.river.publish
 import java.util.*
 
@@ -33,7 +29,7 @@ class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEve
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
         val event = Event.create(packet)
         val uuid = UUID.randomUUID().toString()
-        event.uuid = uuid
+        event.riverId = uuid
         val createRiver = event.createBehov(InternalBehov("create-river"), mapOf())
         println("Creating river")
         rapidsConnection.publish(createRiver)

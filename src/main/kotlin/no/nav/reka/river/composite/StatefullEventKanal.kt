@@ -1,7 +1,6 @@
 package no.nav.reka.river.composite
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataFelt
 import no.nav.reka.river.Key
@@ -32,7 +31,7 @@ class StatefullEventKanal(
 
     private fun collectData(packet: Event) {
         val transactionId = UUID.randomUUID().toString()
-        packet.uuid = transactionId
+        packet.riverId = transactionId
 
         dataFelter.map { dataFelt ->
             Pair(dataFelt, packet[dataFelt])

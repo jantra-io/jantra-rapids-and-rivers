@@ -1,7 +1,6 @@
 package no.nav.reka.river.examples.example_8_retrieving_data_from_client.services
 
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
@@ -19,21 +18,21 @@ class ApplicationRecievedListener(val rapidsConnection: RapidsConnection, val re
 
 
     override fun onEvent(event: Event) {
-        redisStore.set(event.uuid(),event.clientId)
+        redisStore.set(event.riverId(),event.clientId)
         rapidsConnection.publish(event.createBehov(BehovName.PERSIST_DOCUMENT, mapOf(DataFelt.FORMATED_DOCUMENT to event[DataFelt.FORMATED_DOCUMENT])))
     }
 
     override fun onData(data: Data) {
         rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED))
         val dokRef = data[DataFelt.DOCUMENT_REFERECE].asText()
-        val uuid = data.uuid()
+        val uuid = data.riverId()
         val clientId = redisStore.get(uuid)
         redisStore.set(clientId!!, dokRef)
     }
 
      override fun onFail(fail: Fail) {
 
-        val clientId = redisStore.get(fail.uuid())
+        val clientId = redisStore.get(fail.riverId())
          redisStore.set(clientId!!, "{fail:$fail.feilmelding}")
      }
 

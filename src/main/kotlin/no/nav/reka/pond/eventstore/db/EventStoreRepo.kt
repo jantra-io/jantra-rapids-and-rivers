@@ -2,24 +2,18 @@ package no.nav.reka.pond.eventstore.db
 
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageProblems
-import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.Key
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.model.Behov
 import no.nav.reka.river.model.Event
-import no.nav.reka.river.model.Fail
-import no.nav.reka.river.model.Message
 import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.alias
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.exists
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.notExists
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.lang.IllegalArgumentException
 import java.time.LocalDateTime
 
 class EventStoreRepo(val database: Database) {
@@ -30,7 +24,7 @@ class EventStoreRepo(val database: Database) {
                 it[id] = event.toJsonMessage().id
                 it[EVENTSTORE_TABLE.appKey] = appKey
                 it[eventName] = event.event.value
-                it[originRiver] = event[Key.TRANSACTION_ORIGIN].asText()
+                it[originRiver] = event[Key.RIVER_ORIGIN].asText()
                 it[eventTime] = LocalDateTime.parse(event[Key.EVENT_TIME].asText())
                 it[message] = event.toJsonMessage().toJson()
             }
@@ -56,7 +50,7 @@ class EventStoreRepo(val database: Database) {
 
     }
 
-    fun findDownstreamEvents(appKey: String,event: MessageType.Event ) : List<Event> {
+    fun findUpstreamEvent(appKey: String, event: MessageType.Event ) : List<Event> {
 
         val row = transaction (database.db) {
             EVENTSTORE_TABLE.join(RIVER_TABLE, JoinType.INNER, EVENTSTORE_TABLE.originRiver,RIVER_TABLE.riverId)

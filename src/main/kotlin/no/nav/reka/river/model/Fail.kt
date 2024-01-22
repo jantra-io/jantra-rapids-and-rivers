@@ -23,7 +23,7 @@ class Fail internal constructor(val event: MessageType.Event,
             it.rejectKey(Key.BEHOV.str())
             it.rejectKey(Key.DATA.str())
             it.demandKey(Key.FAIL.str())
-            it.interestedIn(Key.UUID.str())
+            it.interestedIn(Key.RIVER_ID.str())
             it.interestedIn(Key.FAILED_BEHOV)
             it.interestedIn(Key.EVENT_TIME)
         }
@@ -53,11 +53,11 @@ class Fail internal constructor(val event: MessageType.Event,
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
      fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
-        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid(), Key.EVENT_ID.str() to jsonMessage.id) + map.mapKeys { it.key.str }))
+        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.RIVER_ID.str() to riverId()) + map.mapKeys { it.key.str }))
     }
 
-    override fun uuid(): String {
-        return jsonMessage[Key.UUID.str()].asText()
+    override fun riverId(): String {
+        return jsonMessage[Key.RIVER_ID.str()].asText()
     }
 
     override fun toJsonMessage(): JsonMessage {

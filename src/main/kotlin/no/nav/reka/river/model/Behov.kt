@@ -27,9 +27,9 @@ class Behov internal constructor(val event: MessageType.Event,
             it.demandKey(Key.BEHOV.str())
             it.rejectKey(Key.DATA.str())
             it.rejectKey(Key.FAIL.str())
-            it.interestedIn(Key.UUID.str())
+            it.interestedIn(Key.RIVER_ID.str())
             it.interestedIn(Key.EVENT_TIME)
-            it.interestedIn(Key.EVENT_ID)
+            it.interestedIn(Key.EVENT_ORIGIN)
         }
 
         fun create(event: MessageType.Event, behov: MessageType.Behov ,map: Map<IKey, Any> = emptyMap() ) : Behov {
@@ -47,18 +47,18 @@ class Behov internal constructor(val event: MessageType.Event,
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createData(map: Map<IDataFelt, Any>): Data {
-        return Data(event, JsonMessage.newMessage(event.value, mapOfNotNull(Key.DATA.str() to "", Key.UUID.str() to uuid()) + map.mapKeys { it.key.str }))
+        return Data(event, JsonMessage.newMessage(event.value, mapOfNotNull(Key.DATA.str() to "", Key.RIVER_ID.str() to riverId()) + map.mapKeys { it.key.str }))
     }
 
     fun createFail(feilmelding:String, data: Map<IKey,Any> = emptyMap()) : Fail {
-        return Fail.create(event, behov,feilmelding , mapOfNotNull(Key.UUID to uuid()) + data.mapKeys { it.key as IKey })
+        return Fail.create(event, behov,feilmelding , mapOfNotNull(Key.RIVER_ID to riverId()) + data.mapKeys { it.key as IKey })
     }
 
     fun createBehov(behov: MessageType.Behov,data: Map<IKey, Any>) : Behov {
-        return Behov(this.event,behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.UUID.str() to uuid(),Key.BEHOV.str() to behov.value) + data.mapKeys { it.key.str }))
+        return Behov(this.event,behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.RIVER_ID.str() to riverId(),Key.BEHOV.str() to behov.value) + data.mapKeys { it.key.str }))
     }
 
-    override fun uuid() = jsonMessage[Key.UUID.str()].asText()
+    override fun riverId() = jsonMessage[Key.RIVER_ID.str()].asText()
 
     override fun toJsonMessage(): JsonMessage {
         return jsonMessage

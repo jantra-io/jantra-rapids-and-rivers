@@ -18,7 +18,7 @@ class RiverRepo(val database: Database) {
     fun put(behov: Behov) {
         transaction(database.db) {
             RIVER_TABLE.insert {
-                it[riverId] = behov.uuid()
+                it[riverId] = behov.riverId()
                 it[eventName] = behov.event.value
                 it[behovName] = behov.behov.value
                 it[isFail] = false
@@ -31,7 +31,7 @@ class RiverRepo(val database: Database) {
      fun put(fail: Fail) {
          transaction(database.db) {
              RIVER_TABLE.insert {
-                 it[riverId] = fail.uuid()
+                 it[riverId] = fail.riverId()
                  it[eventName] = fail.event.value
                  it[behovName] = fail.behov?.value
                  it[isFail] = false
@@ -44,8 +44,8 @@ class RiverRepo(val database: Database) {
      fun createRiver(event:Behov) {
         transaction (database.db) {
             RIVER_EVENT.insert {
-                it[eventId] = event[Key.EVENT_ID].asText()
-                it[riverId] = event[Key.UUID].asText()
+                it[eventId] = event[Key.EVENT_ORIGIN].asText()
+                it[riverId] = event[Key.RIVER_ID].asText()
             }
         }
 

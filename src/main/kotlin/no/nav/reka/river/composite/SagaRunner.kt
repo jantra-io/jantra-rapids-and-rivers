@@ -76,7 +76,7 @@ class SagaRunner(val redisStore: IRedisStore,val rapidsConnection: RapidsConnect
     fun determineTransactionState(message: TxMessage): Transaction {
         // event bør ikke ha UUID men dette er ikke konsistent akkuratt nå så midlertidig blir det sånn til vi får det konsistent.
         // vi trenger også clientID for correlation
-        val transactionId = message.uuid()!!
+        val transactionId = message.riverId()!!
         if (message is Fail) { // Returnerer INPROGRESS eller TERMINATE
             log.error("Feilmelding er ${message.toString()}")
             return implementation.onError(message as Fail)

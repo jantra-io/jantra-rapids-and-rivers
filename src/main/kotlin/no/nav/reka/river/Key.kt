@@ -10,13 +10,16 @@ enum class Key(override val str: String) : IKey{
     BEHOV("@behov"),
     FAILED_BEHOV("failed-behov"),
     EVENT_TIME("@opprettet"),
-    UUID("uuid"),
+    // Unique identifier of a River.
+    RIVER_ID("river-id"),
+    // Identifier used to retrieve data from client API
     CLIENT_ID("client_id"),
-    TRANSACTION_ORIGIN("transaction_origin"),
+    //Event has been created as part of River with river-id equal river-origin
+    RIVER_ORIGIN("river-origin"),
     DATA("data"),
     FAIL("fail"),
     APP_KEY("app_key"),
-    EVENT_ID("river-event-id");
+    EVENT_ORIGIN("event-origin-id");
 
     override fun toString(): String =
             str

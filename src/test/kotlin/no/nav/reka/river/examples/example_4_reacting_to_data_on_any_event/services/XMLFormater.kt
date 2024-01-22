@@ -22,7 +22,7 @@ class XMLFormater(rapidsConnection: RapidsConnection) : Løser(rapidsConnection)
         it.interestedIn(DataFelt.RAW_DOCUMENT)
     }
 
-    override fun onBehov(packet: Behov) {
-        rapidsConnection.publish(packet.createData(mapOf(DataFelt.FORMATED_DOCUMENT to "My XML formatted document")))
+    override fun onBehov(behov: Behov) {
+        rapidsConnection.publish(behov.createData(mapOf(DataFelt.FORMATED_DOCUMENT to "My XML formatted document")))
     }
 }

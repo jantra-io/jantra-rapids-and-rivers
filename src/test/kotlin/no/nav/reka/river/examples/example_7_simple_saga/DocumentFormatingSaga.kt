@@ -20,18 +20,18 @@ class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
     override fun dispatchBehov(message: TxMessage, transaction: Transaction) {
         if (transaction == Transaction.NEW) {
             val event = message as Event
-            val rawDocument = redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.RAW_DOCUMENT))!!
+            val rawDocument = redisStore.get(RedisKey.dataKey(message.riverId(),DataFelt.RAW_DOCUMENT))!!
             rapid.publish(event.createBehov(BehovName.FORMAT_DOCUMENT,
                                             mapOf(DataFelt.RAW_DOCUMENT to rawDocument)))
             rapid.publish(event.createBehov(BehovName.FORMAT_DOCUMENT_IBM, mapOf(DataFelt.RAW_DOCUMENT to rawDocument)))
         }
-        else if(isDataCollected(*step1data(message.uuid()))) {
+        else if(isDataCollected(*step1data(message.riverId()))) {
             message.takeIf { message is Data }
                 ?.let { message as Data }!!
                 .let {
                     it.createBehov(BehovName.PERSIST_DOCUMENT, mapOfNotNull(
-                        DataFelt.FORMATED_DOCUMENT to  redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT)).takeIf { it!="" },
-                        DataFelt.FORMATED_DOCUMENT_IBM to redisStore.get(RedisKey.dataKey(message.uuid(),DataFelt.FORMATED_DOCUMENT_IBM))!!)
+                        DataFelt.FORMATED_DOCUMENT to  redisStore.get(RedisKey.dataKey(message.riverId(),DataFelt.FORMATED_DOCUMENT)).takeIf { it!="" },
+                        DataFelt.FORMATED_DOCUMENT_IBM to redisStore.get(RedisKey.dataKey(message.riverId(),DataFelt.FORMATED_DOCUMENT_IBM))!!)
                 ).also {
                     rapid.publish(it)
                 }
@@ -42,7 +42,7 @@ class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
 
     override fun onError(feil: Fail): Transaction {
         if (feil.behov!!.equals(BehovName.FORMAT_DOCUMENT))
-            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.uuid(),DataFelt.FORMATED_DOCUMENT),null as? String) }
+            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.riverId(),DataFelt.FORMATED_DOCUMENT),null as? String) }
 
         return Transaction.TERMINATE
     }

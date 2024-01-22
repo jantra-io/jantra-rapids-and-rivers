@@ -14,7 +14,7 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class TestDataConsumer : EndToEndTest() {
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() = { rapid:RapidsConnection, redisStore -> rapid.buildReactingToData(redisStore) }
+        get() = { rapid:RapidsConnection, redisStore -> rapid.buildReactingToData() }
 
     @Test
     fun `Consumer reacting to data, agnostic of event and behov`() {

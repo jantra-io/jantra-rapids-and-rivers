@@ -10,18 +10,18 @@ import no.nav.reka.river.model.Message
 
 
 fun RapidsConnection.publish(behov: Behov) {
-    this.publish(behov.uuid(), behov.toJsonMessage().toJson())
+    this.publish(behov.riverId(), behov.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(data: Data) {
-    this.publish(data.uuid(),data.toJsonMessage().toJson())
+    this.publish(data.riverId(),data.toJsonMessage().toJson())
 }
 fun RapidsConnection.publish(event: Event) {
     this.publish(event.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(fail: Fail) {
-    this.publish(fail.uuid(), fail.toJsonMessage().toJson())
+    this.publish(fail.riverId(), fail.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(message: Message) {

@@ -20,8 +20,8 @@ class PersistDocument(rapidsConnection: RapidsConnection) : DataConsumer(rapidsC
         print("persisting formated document $formatedDocument")
         return "AB123"
     }
-    override fun onData(packet: Data) {
-        val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(DataFelt.DOCUMENT_REFERECE to ref)))
+    override fun onData(data: Data) {
+        val ref = persistDocument(data[DataFelt.FORMATED_DOCUMENT].asText())
+        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED, mapOf(Key.RIVER_ORIGIN to data.riverId(),DataFelt.DOCUMENT_REFERECE to ref)))
     }
 }

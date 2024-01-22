@@ -14,7 +14,7 @@ import no.nav.reka.river.mapOfNotNull
 
 class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, val clientId: String?=null) : Message, TxMessage {
 
-    @Transient var uuid:String? = null
+    @Transient var riverId:String? = null
 
     init {
         packetValidator.validate(jsonMessage)
@@ -26,8 +26,8 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
             it.rejectKey(Key.BEHOV.str())
             it.rejectKey(Key.DATA.str())
             it.rejectKey(Key.FAIL.str())
-            it.rejectKey(Key.UUID.str())
-            it.interestedIn(Key.TRANSACTION_ORIGIN.str)
+            it.rejectKey(Key.RIVER_ID.str())
+            it.interestedIn(Key.RIVER_ORIGIN.str)
             it.interestedIn(Key.CLIENT_ID.str)
             it.interestedIn(Key.EVENT_TIME)
             it.interestedIn(Key.APP_KEY)
@@ -51,10 +51,10 @@ class Event(val event:MessageType.Event, private val jsonMessage:JsonMessage, va
     override operator fun set(key: IKey, value: Any) { jsonMessage[key.str] = value }
 
     fun createBehov(behov: MessageType.Behov,map: Map<IDataFelt, Any>): Behov {
-        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.UUID.str() to uuid, Key.EVENT_ID.str() to jsonMessage.id) + map.mapKeys { it.key.str }))
+        return Behov(event, behov, JsonMessage.newMessage(event.value, mapOfNotNull(Key.BEHOV.str() to behov.value, Key.RIVER_ID.str() to riverId, Key.EVENT_ORIGIN.str() to jsonMessage.id) + map.mapKeys { it.key.str }))
     }
 
-    override fun uuid() = this.uuid?:""
+    override fun riverId() = this.riverId?:""
 
     override fun toJsonMessage(): JsonMessage {
        return jsonMessage

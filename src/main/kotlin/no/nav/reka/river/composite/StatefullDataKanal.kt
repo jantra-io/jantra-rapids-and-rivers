@@ -31,7 +31,7 @@ class StatefullDataKanal(
     }
 
     override fun onData(data: Data) {
-        if (data.uuid().isNullOrEmpty()) {
+        if (data.riverId().isNullOrEmpty()) {
             log.error("TransaksjonsID er ikke initialisert for ${data.toJsonMessage().toJson()}")
             rapidsConnection.publish(
                 Fail.create(InternalEvent(data.event.value),
@@ -57,7 +57,7 @@ class StatefullDataKanal(
             return false
         }.first()
         val str = if (data.second.isTextual) { data.second.asText() } else data.second.toString()
-        redisStore.set(message[Key.UUID].asText() + data.first, str)
+        redisStore.set(message[Key.RIVER_ID].asText() + data.first, str)
         return true
     }
 

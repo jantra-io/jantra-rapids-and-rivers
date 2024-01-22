@@ -8,7 +8,7 @@ import no.nav.reka.river.examples.example_4_reacting_to_data_on_any_event.servic
 import no.nav.reka.river.redis.RedisStore
 
 
-    fun RapidsConnection.buildReactingToData(redisStore: RedisStore): RapidsConnection {
+    fun RapidsConnection.buildReactingToData(): RapidsConnection {
         PersistDocument(this).start()
         DocumentRecievedListener(this).start()
         JSONFormater(this).start()
