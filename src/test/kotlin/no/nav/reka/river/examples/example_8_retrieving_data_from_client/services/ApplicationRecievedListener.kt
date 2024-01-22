@@ -5,7 +5,6 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IDataListener
 import no.nav.reka.river.IEventListener
 import no.nav.reka.river.IFailListener
-import no.nav.reka.river.Rapid
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
@@ -26,7 +25,6 @@ class ApplicationRecievedListener(val rapidsConnection: RapidsConnection, val re
 
     override fun onData(data: Data) {
         rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED))
-
         val dokRef = data[DataFelt.DOCUMENT_REFERECE].asText()
         val uuid = data.uuid()
         val clientId = redisStore.get(uuid)

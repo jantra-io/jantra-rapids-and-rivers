@@ -8,19 +8,6 @@ import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
 import no.nav.reka.river.model.Message
 
-class Rapid(val rapidsConnection: RapidsConnection) {
-    fun publishEvent(event: Event) {
-        rapidsConnection.publish(event.toJsonMessage().toJson())
-    }
-
-    fun publishBehov(behov: Behov)  {
-        rapidsConnection.publish(behov.toJsonMessage().toJson())
-    }
-
-    fun publishData(data: Data)  {
-        rapidsConnection.publish(data.toJsonMessage().toJson())
-    }
-}
 
 fun RapidsConnection.publish(behov: Behov) {
     this.publish(behov.uuid(), behov.toJsonMessage().toJson())

@@ -6,7 +6,6 @@ import no.nav.reka.river.IDataFelt
 import no.nav.reka.river.IKey
 import no.nav.reka.river.basic.EventListener
 import no.nav.reka.river.MessageType
-import no.nav.reka.river.Rapid
 import no.nav.reka.river.basic.FailListener
 import no.nav.reka.river.model.Event
 import no.nav.reka.river.model.Fail
