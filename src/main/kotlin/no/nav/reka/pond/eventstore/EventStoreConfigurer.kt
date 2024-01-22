@@ -19,7 +19,7 @@ fun RapidsConnection.configureEventStore(database: Database): RapidsConnection {
     EventScrapper(this, eventStoreRepo) {
         event: Event -> event[Key.APP_KEY].asText()
     }.start()
-    BehovRiver(this, BehovScrapper(riverStoreRepo),{}).start()
+    BehovRiver(this, BehovScrapper(riverStoreRepo)) {}.start()
     FailRiver(this, FailScrapper(riverStoreRepo),{}).start()
     return this
 

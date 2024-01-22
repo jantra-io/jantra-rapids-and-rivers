@@ -20,17 +20,17 @@ interface IEventListener : IMessageListener {
 
 }
 
-interface  IFailListener : IMessageListener {
+fun interface  IFailListener : IMessageListener {
     fun onFail(fail: Fail)
 
 }
 
-interface IDataListener : IMessageListener {
+fun interface IDataListener : IMessageListener {
 
     fun onData(data: Data)
 }
 
-interface IBehovListener : IMessageListener {
+fun interface IBehovListener {
 
     fun onBehov(behov: Behov)
 }

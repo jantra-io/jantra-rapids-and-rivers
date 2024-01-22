@@ -1,7 +1,8 @@
 package no.nav.reka.river.examples.example_2_basic_listener
 
 import no.nav.helse.rapids_rivers.RapidsConnection
-import no.nav.reka.river.examples.services.*
+import no.nav.reka.river.examples.services.basic.ApplicationStartedListener
+import no.nav.reka.river.examples.services.basic.RetrieveFullNameService
 
 import no.nav.reka.river.redis.RedisStore
 

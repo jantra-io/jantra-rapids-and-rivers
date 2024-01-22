@@ -7,7 +7,7 @@ import no.nav.helse.rapids_rivers.River
 import no.nav.reka.river.IBehovListener
 import no.nav.reka.river.model.Behov
 
-class BehovRiver(val rapidsConnection: RapidsConnection, val behovListener: IBehovListener, private val riverValidation: River.PacketValidation) : River.PacketListener {
+class BehovRiver(val rapidsConnection: RapidsConnection, val behovListener:IBehovListener, private val riverValidation: River.PacketValidation) : River.PacketListener {
 
     fun start() {
         configure(

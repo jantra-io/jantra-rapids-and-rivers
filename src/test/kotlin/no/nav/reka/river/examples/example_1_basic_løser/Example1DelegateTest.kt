@@ -11,10 +11,10 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("My First test")
-class FirstTest : EndToEndTest() {
+class Example1DelegateTest : EndToEndTest() {
 
     @org.junit.jupiter.api.Test
-    fun `trigger simple løser`() {
+    fun `Trigger simple løser`() {
 
         val needFullName = Behov.create(EventName.APPLICATION_INITIATED,
                                         BehovName.FULL_NAME,
@@ -28,5 +28,5 @@ class FirstTest : EndToEndTest() {
     }
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
-        get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBasicConsumerApp(redisStore)}
+        get() =   {rapid: RapidsConnection,redisStore:RedisStore -> rapid.buildBasicConsumerAppWithDelegation(redisStore)}
 }

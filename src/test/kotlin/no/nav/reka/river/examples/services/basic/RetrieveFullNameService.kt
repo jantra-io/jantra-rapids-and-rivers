@@ -1,7 +1,8 @@
-package no.nav.reka.river.examples.services
+package no.nav.reka.river.examples.services.basic
 
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.reka.river.IBehovListener
 import no.nav.reka.river.Key
 import no.nav.reka.river.basic.Løser
 import no.nav.reka.river.MessageType
@@ -9,6 +10,7 @@ import no.nav.reka.river.demandValue
 import no.nav.reka.river.examples.example_1_basic_løser.BehovName
 import no.nav.reka.river.examples.example_1_basic_løser.DataFelt
 import no.nav.reka.river.examples.example_1_basic_løser.EventName
+import no.nav.reka.river.model.Behov
 import no.nav.reka.river.publish
 
 class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapidsConnection) {
@@ -20,6 +22,13 @@ class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapid
     }
 
     override fun onBehov(behov: no.nav.reka.river.model.Behov) {
+        rapidsConnection.publish(behov.createData(mapOf(DataFelt.NAME to "Alexander Petrov")))
+    }
+
+}
+
+class RetrieveFullNameServiceDelegate(val rapidsConnection: RapidsConnection) : IBehovListener {
+    override fun onBehov(behov: Behov) {
         rapidsConnection.publish(behov.createData(mapOf(DataFelt.NAME to "Alexander Petrov")))
     }
 
