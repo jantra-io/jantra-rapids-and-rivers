@@ -23,18 +23,18 @@ class Rapid(val rapidsConnection: RapidsConnection) {
 }
 
 fun RapidsConnection.publish(behov: Behov) {
-    this.publish(behov.toJsonMessage().toJson())
+    this.publish(behov.uuid(), behov.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(data: Data) {
-    this.publish(data.toJsonMessage().toJson())
+    this.publish(data.uuid(),data.toJsonMessage().toJson())
 }
 fun RapidsConnection.publish(event: Event) {
     this.publish(event.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(fail: Fail) {
-    this.publish(fail.toJsonMessage().toJson())
+    this.publish(fail.uuid(), fail.toJsonMessage().toJson())
 }
 
 fun RapidsConnection.publish(message: Message) {

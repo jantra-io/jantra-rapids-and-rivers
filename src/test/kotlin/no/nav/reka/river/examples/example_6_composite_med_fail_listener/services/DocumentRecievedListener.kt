@@ -32,7 +32,7 @@ class DocumentRecievedListener(val rapid: RapidsConnection) : CompositeListener,
     }
 
     override fun onFail(fail: Fail) {
-        this.rapid.publish(Behov.create(fail.event,BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
+        this.rapid.publish(fail.createBehov(BehovName.FORMAT_DOCUMENT_IBM,mapOf(DataFelt.RAW_DOCUMENT to fail[DataFelt.RAW_DOCUMENT])))
     }
 
 }

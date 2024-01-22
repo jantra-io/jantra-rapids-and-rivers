@@ -47,7 +47,7 @@ class DocumentFormatingSaga(event: MessageType.Event) : Saga(event) {
     override fun onError(feil: Fail): Transaction {
         if (feil.behov!!.equals(BehovName.FORMAT_DOCUMENT)) {
             redisStore.set(RedisKey.feilKey(feil.uuid()),"Unabled to format document. Proceeding with IBM formatter")
-            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.uuid!!,DataFelt.FORMATED_DOCUMENT),null as? String) }
+            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.uuid(),DataFelt.FORMATED_DOCUMENT),null as? String) }
         }
 
 
@@ -61,7 +61,7 @@ class DocumentFormatingSaga(event: MessageType.Event) : Saga(event) {
         val feil = redisStore.get(RedisKey.feilKey(message.uuid()))
         val node = jacksonObjectMapper().readTree("{}") as ObjectNode
         node.put("formatteddocument",formatedDokument)
-        if (feil != null) node.put("feil",feil!!)
+        if (feil != null) node.put("feil",feil)
         val clientId = redisStore.get(RedisKey.transactionKey(message.uuid(),this.eventName))
 
         redisStore.set(RedisKey.clientKey(clientId!!), jacksonObjectMapper().writeValueAsString(node))

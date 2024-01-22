@@ -42,7 +42,7 @@ class DocumentFormatingSaga(val event: MessageType.Event) : Saga(event) {
 
     override fun onError(feil: Fail): Transaction {
         if (feil.behov!!.equals(BehovName.FORMAT_DOCUMENT))
-            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.uuid!!,DataFelt.FORMATED_DOCUMENT),null as? String) }
+            return Transaction.IN_PROGRESS.also { redisStore.set(RedisKey.dataKey(feil.uuid(),DataFelt.FORMATED_DOCUMENT),null as? String) }
 
         return Transaction.TERMINATE
     }
