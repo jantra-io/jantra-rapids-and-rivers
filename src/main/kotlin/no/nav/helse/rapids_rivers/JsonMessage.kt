@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.reka.river.Key
+import no.nav.jantra.river.Key
 import java.net.InetAddress
 import java.time.LocalDate
 import java.time.LocalDateTime
