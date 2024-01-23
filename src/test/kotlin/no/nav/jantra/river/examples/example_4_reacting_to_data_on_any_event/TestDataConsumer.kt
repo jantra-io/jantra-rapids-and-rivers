@@ -7,6 +7,7 @@ import no.nav.jantra.river.examples.example_1_basic_løser.DataFelt
 import no.nav.jantra.river.examples.example_1_basic_løser.EventName
 import no.nav.jantra.river.model.Event
 import no.nav.jantra.river.redis.RedisStore
+import no.nav.jantra.river.wait
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -19,7 +20,7 @@ class TestDataConsumer : EndToEndTest() {
     @Test
     fun `Consumer reacting to data, agnostic of event and behov`() {
         publish(Event.create(EventName.DOCUMENT_RECIEVED, map = mapOf(DataFelt.RAW_DOCUMENT to "raw document")))
-        Thread.sleep(5000)
+        wait()
         with(filter(EventName.DOCUMENT_RECIEVED).first()) {
             Assertions.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(),"raw document")
         }

@@ -7,6 +7,7 @@ import no.nav.jantra.river.examples.example_1_basic_løser.DataFelt
 import no.nav.jantra.river.examples.example_1_basic_løser.EventName
 import no.nav.jantra.river.model.Event
 import no.nav.jantra.river.redis.RedisStore
+import no.nav.jantra.river.wait
 import org.junit.Assert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
@@ -24,7 +25,7 @@ class BasicListenerTest : EndToEndTest() {
         val applicationStarted = Event.create(EventName.APPLICATION_INITIATED,
                                         mapOf(DataFelt.APPLICATION_ID to "123"))
         this.publish(applicationStarted)
-        Thread.sleep(5000)
+        wait()
         with(filter(EventName.APPLICATION_INITIATED, BehovName.FULL_NAME).first()) {
           Assert.assertEquals(this[DataFelt.APPLICATION_ID.str].asText(), "123")
         }

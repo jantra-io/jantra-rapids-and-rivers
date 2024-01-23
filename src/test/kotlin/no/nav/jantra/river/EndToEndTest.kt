@@ -167,3 +167,6 @@ class Messages(private val messages: MutableList<JsonNode> = mutableListOf()) {
 
     fun unwrap():List<JsonNode> = messages.map { it }.toList()
 }
+
+
+fun wait() = Thread.sleep(5000)

@@ -9,6 +9,7 @@ import no.nav.jantra.river.examples.example_1_basic_løser.DataFelt
 import no.nav.jantra.river.examples.example_1_basic_løser.EventName
 import no.nav.jantra.river.model.Event
 import no.nav.jantra.river.redis.RedisStore
+import no.nav.jantra.river.wait
 import org.junit.Assert
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -53,7 +54,7 @@ class SimpleSagaTest : EndToEndTest() {
     fun `2 step saga demonstrating fail handling`() {
 
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(DataFelt.RAW_DOCUMENT to RAW_DOCUMNET + ILLEGAL_CHARACTER)))
-        Thread.sleep(5000)
+        wait()
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_DOCUMENT).first()) {
             Assert.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET +ILLEGAL_CHARACTER)
         }
