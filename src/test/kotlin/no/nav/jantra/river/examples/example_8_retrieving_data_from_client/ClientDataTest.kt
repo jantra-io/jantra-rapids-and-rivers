@@ -4,7 +4,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.jantra.river.EndToEndTest
 import no.nav.jantra.river.examples.example_8_retrieving_data_from_client.frontend.ApplicationRecievedProducer
 import no.nav.jantra.river.redis.RedisStore
-import no.nav.jantra.river.wait
+import no.nav.jantra.river.pause
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ class ClientDataTest() : EndToEndTest() {
     @Test
     fun `client can recieve data via redis`() {
         val dokumentRef = ApplicationRecievedProducer(this.rapid, this.redisPoller).publish("My application form")
-        wait()
+        pause()
         Assertions.assertFalse(dokumentRef.isNullOrBlank())
     }
 

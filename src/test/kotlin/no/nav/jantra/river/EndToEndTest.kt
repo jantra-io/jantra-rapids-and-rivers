@@ -169,4 +169,4 @@ class Messages(private val messages: MutableList<JsonNode> = mutableListOf()) {
 }
 
 
-fun wait() = Thread.sleep(5000)
+fun pause() = Thread.sleep(5000)

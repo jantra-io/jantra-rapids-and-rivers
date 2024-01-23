@@ -4,7 +4,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.jantra.river.EndToEndTest
 import no.nav.jantra.river.model.Behov
 import no.nav.jantra.river.redis.RedisStore
-import no.nav.jantra.river.wait
+import no.nav.jantra.river.pause
 import org.junit.Assert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
@@ -21,7 +21,7 @@ class Example1DelegateTest : EndToEndTest() {
                                         BehovName.FULL_NAME,
                                         mapOf(DataFelt.APPLICATION_ID to "123"))
         this.publish(needFullName)
-        wait()
+        pause()
         with(filter(EventName.APPLICATION_INITIATED, datafelt = DataFelt.NAME).first()) {
           Assert.assertEquals(this[DataFelt.NAME.str].asText(), "Alexander Petrov")
         }

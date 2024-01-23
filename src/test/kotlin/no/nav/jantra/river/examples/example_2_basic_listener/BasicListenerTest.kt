@@ -7,14 +7,14 @@ import no.nav.jantra.river.examples.example_1_basic_løser.DataFelt
 import no.nav.jantra.river.examples.example_1_basic_løser.EventName
 import no.nav.jantra.river.model.Event
 import no.nav.jantra.river.redis.RedisStore
-import no.nav.jantra.river.wait
+import no.nav.jantra.river.pause
 import org.junit.Assert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("Basic listener test")
+@DisplayName("Example 2: Basic listener test")
 class BasicListenerTest : EndToEndTest() {
 
     override val appBuilder: (rapidConnection: RapidsConnection, redisStore: RedisStore) -> RapidsConnection
@@ -25,7 +25,7 @@ class BasicListenerTest : EndToEndTest() {
         val applicationStarted = Event.create(EventName.APPLICATION_INITIATED,
                                         mapOf(DataFelt.APPLICATION_ID to "123"))
         this.publish(applicationStarted)
-        wait()
+        pause()
         with(filter(EventName.APPLICATION_INITIATED, BehovName.FULL_NAME).first()) {
           Assert.assertEquals(this[DataFelt.APPLICATION_ID.str].asText(), "123")
         }

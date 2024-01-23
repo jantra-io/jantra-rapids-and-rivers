@@ -7,19 +7,21 @@ import no.nav.jantra.river.examples.example_1_basic_løser.DataFelt
 import no.nav.jantra.river.examples.example_1_basic_løser.EventName
 import no.nav.jantra.river.model.Event
 import no.nav.jantra.river.redis.RedisStore
-import no.nav.jantra.river.wait
+import no.nav.jantra.river.pause
 import org.junit.Assert
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DisplayName("Example 3: Event emitting 2 behov")
 class EventBehovEvent : EndToEndTest() {
 
     val RAW_DOCUMNET = "This is my raw document"
     @Test
     fun `Event is triggering 2 behov, the last is emitting event`() {
         publish(Event.create(EventName.DOCUMENT_RECIEVED, mapOf(DataFelt.RAW_DOCUMENT to RAW_DOCUMNET)))
-        wait()
+        pause()
         with(filter(EventName.DOCUMENT_RECIEVED, BehovName.FORMAT_DOCUMENT).first()) {
             Assert.assertEquals(this[DataFelt.RAW_DOCUMENT.str].asText(), RAW_DOCUMNET)
         }
