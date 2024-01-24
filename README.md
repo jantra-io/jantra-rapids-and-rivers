@@ -39,5 +39,5 @@ JANTRA opinion about the RAPID is that it does not hold knowledge about what kin
 NEED(Behov), Data or FAIL The different messages have different nature. An event makes sense only in relation to the POND. Why ? Because it is static it is a Fact and it is unchangeable. At the same time a NEED makes sense in the context of a River, same goes for the Data.
 The data is not a single source of thruth as all Data may be a subject to change and it may be invalidated or discarded.
 ## The River
-In contrast to NAV implementation consideres all messages between two events to be part of a River. Each River is assigned a unique identifier and each Event can spawn multiple Rivers ending up with one or more Events.
+In contrast to NAV implementation JANTRA consideres all messages between two events to be part of a River. Each River is assigned a unique identifier and each Event can spawn multiple Rivers ending up with one or more Events.
 
