@@ -33,3 +33,5 @@ Each model class ([Event](https://github.com/jantra-io/jantra-river-pond/blob/ma
             it.interestedIn(Key.APP_KEY)
         }
 ```
+
+<meta name="google-site-verification" content="fD24li9c9vRh7ihLUFVN4m5K2ETVSDA8B-t_wnDAgR8" />
