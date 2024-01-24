@@ -1,5 +1,6 @@
 package no.nav.jantra.river.bridge
 
+import kotlin.concurrent.thread
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -8,6 +9,8 @@ import no.nav.jantra.river.IBehovListener
 import no.nav.jantra.river.model.Behov
 
 class BehovRiver(val rapidsConnection: RapidsConnection, val behovListener:IBehovListener, private val riverValidation: River.PacketValidation) : River.PacketListener {
+
+    var nonBlocking:Boolean = true
 
     fun start() {
         configure(
@@ -23,6 +26,14 @@ class BehovRiver(val rapidsConnection: RapidsConnection, val behovListener:IBeho
         }
     }
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        behovListener.onBehov(Behov.create(packet))
+        if (nonBlocking) {
+            thread {
+                behovListener.onBehov(Behov.create(packet))
+            }
+        }
+        else {
+            behovListener.onBehov(Behov.create(packet))
+        }
+
     }
 }

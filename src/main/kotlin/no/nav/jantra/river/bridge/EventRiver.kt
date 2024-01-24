@@ -1,5 +1,6 @@
 package no.nav.jantra.river.bridge
 
+import kotlin.concurrent.thread
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -12,6 +13,7 @@ import java.util.*
 
 class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEventListener, private val riverValidation:River.PacketValidation) : River.PacketListener{
 
+    var nonBlocking:Boolean = true
     fun start() {
         configure(
             River(rapidsConnection).apply {
@@ -33,7 +35,15 @@ class EventRiver(val rapidsConnection: RapidsConnection, val eventListener: IEve
         val createRiver = event.createBehov(InternalBehov("create-river"), mapOf())
         println("Creating river")
         rapidsConnection.publish(createRiver)
-        eventListener.onEvent(event)
+        if (nonBlocking) {
+            thread {
+                eventListener.onEvent(event)
+            }
+        }
+        else {
+            eventListener.onEvent(event)
+        }
+
     }
 
 

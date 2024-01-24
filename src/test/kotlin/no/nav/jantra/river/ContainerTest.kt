@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
@@ -47,6 +48,14 @@ open class ContainerTest {
             tables.forEach { it.deleteAll() }
         }
         println("Containerne er klare!")
+    }
+
+    @BeforeEach
+    fun beforeEach() {
+        val tables = listOf(EVENTSTORE_TABLE,RIVER_TABLE,RIVER_EVENT)
+        transaction (db.db) {
+            tables.forEach { it.deleteAll() }
+        }
     }
 
     @AfterAll

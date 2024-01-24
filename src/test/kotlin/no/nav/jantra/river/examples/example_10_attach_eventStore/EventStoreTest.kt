@@ -36,9 +36,9 @@ class EventStoreTest: EndToEndTest() {
         }
 
         val eventRepo = EventStoreRepo(this.db)
-        val event = eventRepo.get("doc121234").toJsonMessage().toJson()
-        eventRepo.findUpstreamEvent("doc121234",EventName.DOCUMENT_PERSISTED)
-        println(event)
+        val event = eventRepo.getByAppKey("doc121234").toJsonMessage().toJson()
+  //      eventRepo.findOriginEvent("doc121234",EventName.DOCUMENT_PERSISTED)
+  //      println(event)
 
     }
 

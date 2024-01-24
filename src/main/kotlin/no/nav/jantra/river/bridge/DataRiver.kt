@@ -1,5 +1,6 @@
 package no.nav.jantra.river.bridge
 
+import kotlin.concurrent.thread
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -9,6 +10,7 @@ import no.nav.jantra.river.IDataListener
 
 class DataRiver (val rapidsConnection: RapidsConnection, val dataListener: IDataListener, private val riverValidation: River.PacketValidation) : River.PacketListener{
 
+    var nonBlocking:Boolean = true
     fun start() {
         configure(
             River(rapidsConnection).apply {
@@ -24,7 +26,15 @@ class DataRiver (val rapidsConnection: RapidsConnection, val dataListener: IData
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        dataListener.onData(Data.create(packet))
+         if (nonBlocking) {
+            thread {
+                dataListener.onData(Data.create(packet))
+            }
+         }
+        else {
+             dataListener.onData(Data.create(packet))
+
+         }
     }
 
 

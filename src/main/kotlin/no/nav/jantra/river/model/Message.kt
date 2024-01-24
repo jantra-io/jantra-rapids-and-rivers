@@ -12,3 +12,5 @@ interface Message {
     fun toJsonMessage(): JsonMessage
 
 }
+
+
