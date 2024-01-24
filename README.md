@@ -40,4 +40,18 @@ NEED(Behov), Data or FAIL The different messages have different nature. An event
 The data is not a single source of thruth as all Data may be a subject to change and it may be invalidated or discarded.
 ## The River
 In contrast to NAV implementation JANTRA consideres all messages between two events to be part of a River. Each River is assigned a unique identifier and each Event can spawn multiple Rivers ending up with one or more Events.
+## The Pond
+JANTRA implements the pond as an Event store. In addition it holds a log of the River execution.
+## Identity managment
+Each message has a set of keys.
+
+| Message Type           | Identity     | Description                                                                                                                                                                               |
+|------------------------|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Message(every message) | key          | Unique identifier for each message type                                                                                                                                                   |
+| Event                  | river-id     | In the context of Event riverID is assigned when the message is consumed by the river.<br/> riverID is never persisted on the rapid together with the Event                               |
+|                        | river-origin | Identying the river that has spawned the Event                                                                                                                                            |
+| NEED(Behov)            | river-id     | river-id is aways persistent for a NEED Behov and it is assigned once a NEED is constructed from an Event                                                                                 |
+|                        | event-id     | points to the Event key that has spawned the NEED(Behov)                                                                                                                                  |
+|  Other types of keys   | client-id    | It is used to retrieve a result from a River execution from a Client or API. In this implementation once a River is executed the solution is positioned<br/> in Redis under the client-id | 
+
 
