@@ -6,7 +6,8 @@ JANTRA is acknowledging NAV implementation of rapids and rivers pattern as a Rap
 ## Event model
 
 There are 4 types of messages EVENT, NEED, DATA and FAIL. Originaly @fred george talks about Solution as a responce to a NEED. In practice very often a microservice is wrapping a integration method and high level response object 
-is not practicle. A solution can represent a DATA it can represent a FAIL or it can represent both , so it is a kind of superposition between the two and Jantra does not find it suitable as a response to a simple NEED.
+is not practicle. A solution can represent a DATA it can represent a FAIL or it can represent both , so it is a kind of superposition between the two and Jantra does not find it suitable as a response to a simple NEED. On the other hand a 
+Solution is ok as a high level response to a River (JANTRA consideres everything that happens between two consequent events to be part of the same River) execution.
 Here is a simple layout of the different messages:
 
 ![Event](/doc/messagetype.jpg)
@@ -53,5 +54,7 @@ Each message has a set of keys.
 | NEED(Behov)            | river-id     | river-id is aways persistent for a NEED Behov and it is assigned once a NEED is constructed from an Event                                                                                 |
 |                        | event-id     | points to the Event key that has spawned the NEED(Behov)                                                                                                                                  |
 |  Other types of keys   | client-id    | It is used to retrieve a result from a River execution from a Client or API. In this implementation once a River is executed the solution is positioned<br/> in Redis under the client-id | 
+
+![Event](/doc/identity-managment.jpg)
 
 
