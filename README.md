@@ -1,7 +1,7 @@
 # JANTRA rapids and rivers interpretation
 
 ## Examples
-If you don't want to read a wall of text you can accept this as a form of event buss examples https://github.com/jantra-io/jantra-river-pond/tree/main/src/test/kotlin/no/nav/jantra/river/examples
+If you don't want to read a wall of text you can accept this as a form of event buss and jump to the examples https://github.com/jantra-io/jantra-river-pond/tree/main/src/test/kotlin/no/nav/jantra/river/examples
 
 ## Motivation
 JANTRA is acknowledging NAV implementation of rapids and rivers pattern as a Rapid provider. On top it provides an opinionated intepretation of the Rapids and Rivers (and Ponds) pattern.
