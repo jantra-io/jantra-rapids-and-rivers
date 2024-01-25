@@ -22,6 +22,7 @@ Here is a simple layout of the different messages:
 | DATA         | event-name<br/>data |
 | Fail         | event-name<br/>fail |
 
+All message types share a single key - event-name. The motivation is that every Need, Data or Fail is derived from an originaly occuring event.
 Each model class ([Event](https://github.com/jantra-io/jantra-river-pond/blob/main/src/main/kotlin/no/nav/jantra/river/model/Event.kt),[Need](https://github.com/jantra-io/jantra-river-pond/blob/main/src/main/kotlin/no/nav/jantra/river/model/Need.kt),[Data](https://github.com/jantra-io/jantra-river-pond/blob/main/src/main/kotlin/no/nav/jantra/river/model/Data.kt),[Fail](https://github.com/jantra-io/jantra-river-pond/blob/main/src/main/kotlin/no/nav/jantra/river/model/Fail.kt)) defines its own specification in the form of message validator. Here is example of a Event specification:
 ```
  companion object {
