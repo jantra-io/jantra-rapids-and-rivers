@@ -8,8 +8,7 @@ JANTRA is acknowledging NAV implementation of rapids and rivers pattern as a Rap
 
 ## Event model
 
-There are 4 types of messages EVENT, NEED, DATA and FAIL. Originaly @fred george talks about Solution as a responce to a NEED. In practice very often a microservice is wrapping a integration method and high level response object 
-is not practicle. A solution can represent a DATA it can represent a FAIL or it can represent both , so it is a kind of superposition between the two and Jantra does not find it suitable as a response to a simple NEED. On the other hand a 
+There are 4 types of messages this interpretation defines EVENT, NEED, DATA and FAIL. Originaly @fred george talks about Solution as a responce to a NEED. Practice in NAV shows that the microservices very often are tiny, they may wrap a single integration method and a high level response object such as Solution is not practicle. A solution can represent a DATA it can represent a FAIL or it can represent both , so it is a kind of superposition between the two and Jantra does not find it suitable as a response to a simple NEED. On the other hand a 
 Solution is ok as a high level response to a River (JANTRA consideres everything that happens between two consequent events to be part of the same River) execution.
 Here is a simple layout of the different messages:
 
