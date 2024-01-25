@@ -21,7 +21,7 @@ class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapid
         it.demandValue(Key.BEHOV, BehovName.FULL_NAME)
     }
 
-    override fun onBehov(behov: no.nav.jantra.river.model.Behov) {
+    override fun onBehov(behov: Behov) {
         rapidsConnection.publish(behov.createData(mapOf(DataFelt.NAME to "Alexander Petrov")))
     }
 

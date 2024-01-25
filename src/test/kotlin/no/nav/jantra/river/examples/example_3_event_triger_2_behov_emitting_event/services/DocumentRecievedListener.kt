@@ -15,8 +15,8 @@ class DocumentRecievedListener(rapidsConnection: RapidsConnection, ) : EventList
         it.interestedIn(DataFelt.RAW_DOCUMENT)
     }
 
-    override fun onEvent(packet: Event) {
-         rapidsConnection.publish(packet.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to packet[DataFelt.RAW_DOCUMENT])))
+    override fun onEvent(event: Event) {
+         rapidsConnection.publish(event.createBehov(BehovName.FORMAT_DOCUMENT, mapOf(DataFelt.RAW_DOCUMENT to event[DataFelt.RAW_DOCUMENT])))
     }
 
 }

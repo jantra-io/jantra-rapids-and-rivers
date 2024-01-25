@@ -26,8 +26,8 @@ class PersistDocument(rapidsConnection: RapidsConnection) : Løser(rapidsConnect
         print("persisting formated document $formatedDocument")
         return "AB123"
     }
-    override fun onBehov(packet: Behov) {
-        val ref = persistDocument(packet[DataFelt.FORMATED_DOCUMENT].asText())
-        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED,  mapOf(Key.RIVER_ORIGIN to packet.riverId(),Key.APP_KEY to "AB123", DataFelt.DOCUMENT_REFERECE to "AB123")))
+    override fun onBehov(behov: Behov) {
+        val ref = persistDocument(behov[DataFelt.FORMATED_DOCUMENT].asText())
+        rapidsConnection.publish(Event.create(EventName.DOCUMENT_PERSISTED,  mapOf(Key.RIVER_ORIGIN to behov.riverId(),Key.APP_KEY to "AB123", DataFelt.DOCUMENT_REFERECE to "AB123")))
     }
 }

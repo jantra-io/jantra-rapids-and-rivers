@@ -12,7 +12,6 @@ import no.nav.jantra.river.model.Event
 class PersistDocument(rapidsConnection: RapidsConnection) : DataConsumer(rapidsConnection) {
     override val event: MessageType.Event = EventName.DOCUMENT_RECIEVED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandKey(Key.DATA.str)
         it.demandKey(DataFelt.FORMATED_DOCUMENT.str)
     }
 
