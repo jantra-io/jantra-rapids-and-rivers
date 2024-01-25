@@ -17,7 +17,6 @@ class RetrieveFullNameService(rapidsConnection: RapidsConnection) : Løser(rapid
 
     override val event: MessageType.Event = EventName.APPLICATION_INITIATED
     override fun accept(): River.PacketValidation = River.PacketValidation {
-        it.demandValue(Key.EVENT_NAME, event)
         it.demandValue(Key.BEHOV, BehovName.FULL_NAME)
     }
 
