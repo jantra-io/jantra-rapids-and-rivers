@@ -1,4 +1,4 @@
-# JANTRA rapids and rivers interpretation
+# JANTRA rapids and rivers pattern interpretation
 
 ## Examples
 If you are impatient you can accept this as a form of event buss and jump to the examples https://github.com/jantra-io/jantra-river-pond/tree/main/src/test/kotlin/no/nav/jantra/river/examples
